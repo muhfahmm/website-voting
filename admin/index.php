@@ -1,3 +1,12 @@
+<?php
+session_start();
+require '../db/db.php';
+
+if (!isset($_SESSION['admin'])) {
+    header("Location: ./auth/register.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -135,7 +144,6 @@
         <h2>Admin Panel</h2>
         <ul>
             <li><a href="#">🏠 Dashboard</a></li>
-            <li><a href="#">👥 Hasil Voting</a></li>
             <li><a href="kandidat/tambah.php">➕ Tambah Kandidat</a></li>
             <li><a href="kandidat/daftar.php">📋 Daftar Kandidat</a></li>
             <li><a href="#">🚪 Logout</a></li>
