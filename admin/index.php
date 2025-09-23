@@ -2,10 +2,10 @@
 session_start();
 require '../db/db.php';
 
-if (!isset($_SESSION['admin'])) {
-    header("Location: ./auth/register.php");
-    exit;
-}
+// if (!isset($_SESSION['admin'])) {
+//     header("Location: ./auth/register.php");
+//     exit;
+// }
 ?>
 <!DOCTYPE html>
 <html lang="id">
