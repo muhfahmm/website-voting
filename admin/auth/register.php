@@ -1,63 +1,48 @@
 <?php
+session_start();
 require '../../db/db.php';
+
+if (isset($_SESSION['login'])) {
+    header("Location: ../index.php");
+    exit;
+}
+
 if (isset($_POST['register'])) {
-    // ambil parameter name
-    $username = htmlspecialchars(strtolower($_POST['username']));
-    $password = mysqli_real_escape_string($db, $_POST['password']);
-    $password2 = mysqli_real_escape_string($db, $_POST['password2']);
+    $username = mysqli_real_escape_string($db, $_POST['username']);
+    $password1 = $_POST['password1'];
+    $password2 = $_POST['password2'];
 
-    // cek apakah password 1 dan 2 sama
-    if ($password !== $password2) {
-
+    // cek username sudah ada
+    $result = mysqli_query($db, "SELECT username FROM tb_admin WHERE username = '$username'");
+    if (mysqli_fetch_assoc($result)) {
+        echo "<script>alert('Username sudah terdaftar');</script>";
+    } elseif ($password1 !== $password2) {
+        echo "<script>alert('Password tidak sama');</script>";
     } else {
-        // cek username sudah ada atau belum
-        $check = mysqli_query($db, "SELECT * FROM tb_admin WHERE username = '$username' ");
-        // jika username sudah dipakai
-        if (mysqli_num_rows($check) > 0) {
-            echo "username sudah dipakai";
-        } else {
-            // hash password
-            $hash = password_hash($password, PASSWORD_DEFAULT);
+        // enkripsi password
+        $password = password_hash($password1, PASSWORD_DEFAULT);
 
-            // simpan ke database
-            mysqli_query($db, "INSERT INTO tb_admin 
-            (username,password) VALUES
-            ('$username', ' $hash')");
-            header("Location: login.php");
-            exit;
-        }
+        // simpan user baru
+        mysqli_query($db, "INSERT INTO tb_admin VALUES('', '$username', '$password')");
+
+        echo "<script>alert('Registrasi berhasil! Silakan login.'); document.location.href='login.php';</script>";
     }
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Admin</title>
 </head>
-
 <body>
-    <div class="container">
-        <div class="wrapper">
-            <form action="" method="post">
-                <div class="form-box">
-                    <input type="text" name="username" placeholder="username" required>
-                </div>
-                <div class="form-box">
-                    <input type="password" name="password" placeholder="password" required>
-                </div>
-                <div class="form-box">
-                    <input type="password" name="password2" placeholder=" konfirmasi password" required>
-                </div>
-                <div class="form-box">
-                    <button name="register" type="submit">register</button>
-                </div>
-                <a href="login.php">Login</a>
-            </form>
-        </div>
-    </div>
+    <h2>Register Admin</h2>
+    <form action="" method="post">
+        <input type="text" name="username" placeholder="username" required><br>
+        <input type="password" name="password1" placeholder="password" required><br>
+        <input type="password" name="password2" placeholder="konfirmasi password" required><br>
+        <button type="submit" name="register">Daftar</button>
+    </form>
+    <p>Sudah punya akun? <a href="login.php">Login</a></p>
 </body>
-
 </html>
