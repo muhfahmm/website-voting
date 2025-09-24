@@ -5,29 +5,6 @@ if (isset($_POST['login'])) {
     $username = htmlspecialchars(strtolower($_POST['username']));
     $password = htmlspecialchars(strtolower($_POST['password']));
 
-    // ambil parameter username
-    $result = mysqli_query($db, "SELECT * FROM tb_admin WHERE username = '$username'");
-    // cek apakah ada usernamenya terdaftar di database
-    if (mysqli_num_rows($result) === 1) {
-        $user = mysqli_fetch_assoc($result);
-
-        // cek password
-        if (password_verify($password, $user['password'])) {
-            // login berhasil, set session
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['user_id'] = $user['id'];
-            header("Location: index.php");
-            exit;
-        }
-        // jika password salah
-        else {
-            $error = "password salah";
-        }
-    }
-    // jika username tidak ditemukan
-    else {
-        $error = "username tidak ditemukan";
-    }
 }
 ?>
 <!DOCTYPE html>

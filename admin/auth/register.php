@@ -3,25 +3,29 @@ require '../../db/db.php';
 if (isset($_POST['register'])) {
     // ambil parameter name
     $username = htmlspecialchars(strtolower($_POST['username']));
-    $password = htmlspecialchars(strtolower($_POST['password']));
-    $password2 = htmlspecialchars(strtolower($_POST['password2']));
+    $password = mysqli_real_escape_string($db, $_POST['password']);
+    $password2 = mysqli_real_escape_string($db, $_POST['password2']);
 
-    // cek apakah password 1 dan 2 sudah sama
+    // cek apakah password 1 dan 2 sama
     if ($password !== $password2) {
-        echo "password tidak sama";
+
     } else {
-        // cek username apakah sudah dipakai (dengan mysqli_query SELECT * FROM)
+        // cek username sudah ada atau belum
         $check = mysqli_query($db, "SELECT * FROM tb_admin WHERE username = '$username' ");
-        // hash password
-        $pass_hash = password_hash($password, PASSWORD_BCRYPT);
-        // simpan ke database (dengan mysqli_query INSERT INTO)
-        mysqli_query($db, "INSERT INTO tb_admin
-                        (username,password)
-                        VALUES
-                        ('$username', '$password_hash')
-                        ");
-        header("Location: login.php");
-        exit;
+        // jika username sudah dipakai
+        if (mysqli_num_rows($check) > 0) {
+            echo "username sudah dipakai";
+        } else {
+            // hash password
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+
+            // simpan ke database
+            mysqli_query($db, "INSERT INTO tb_admin 
+            (username,password) VALUES
+            ('$username', ' $hash')");
+            header("Location: login.php");
+            exit;
+        }
     }
 }
 ?>
@@ -50,6 +54,7 @@ if (isset($_POST['register'])) {
                 <div class="form-box">
                     <button name="register" type="submit">register</button>
                 </div>
+                <a href="login.php">Login</a>
             </form>
         </div>
     </div>
