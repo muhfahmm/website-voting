@@ -9,14 +9,19 @@ if (!isset($_SESSION['login'])) {
 }
 
 $admin = $_SESSION['username'];
+
+$query = mysqli_query($db, "SELECT * FROM tb_kandidat")
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Admin - Voting OSIS</title>
     <link rel="stylesheet" href="./assets/css/index.css">
+    <link rel="stylesheet" href="./assets/css/global.css">
 </head>
+
 <body>
     <div class="sidebar">
         <h2>Admin Panel</h2>
@@ -47,24 +52,16 @@ $admin = $_SESSION['username'];
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Ketua A & Wakil A</td>
-                        <td>120</td>
-                        <td>40%</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Ketua B & Wakil B</td>
-                        <td>90</td>
-                        <td>30%</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Ketua C & Wakil C</td>
-                        <td>90</td>
-                        <td>30%</td>
-                    </tr>
+                    <?php
+                    $no = 1;
+                    while ($row = mysqli_fetch_assoc($query)) : ?>
+                        <tr>
+                            <td><?= $no++; ?></td>
+                            <td><?= $row['nomor_kandidat']; ?></td>
+                            <td><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></td>
+                            <td>100%</td>
+                        </tr>
+                    <?php endwhile; ?>
                 </tbody>
             </table>
 
@@ -86,4 +83,5 @@ $admin = $_SESSION['username'];
         </section>
     </div>
 </body>
+
 </html>

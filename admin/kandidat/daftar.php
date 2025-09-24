@@ -1,3 +1,15 @@
+<?php
+session_start();
+require '../../db/db.php';
+
+// cek login
+if (!isset($_SESSION['login'])) {
+    header("Location: auth/login.php");
+    exit;
+}
+
+$query = mysqli_query($db, "SELECT * FROM tb_kandidat");
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -53,8 +65,8 @@
         }
 
         .foto-wrapper img {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             object-fit: cover;
             border-radius: 50%;
             border: 2px solid #2c3e50;
@@ -77,44 +89,30 @@
 </head>
 
 <body>
-    <h1>📋 Daftar Kandidat Ketua & Wakil OSIS</h1>
-
     <div class="kandidat-container">
-        <!-- Kandidat 1 -->
-        <div class="kandidat-card">
-            <div class="foto-wrapper">
-                <img src="assets/img/kandidat/ketua1.jpg" alt="Ketua A">
-                <img src="assets/img/kandidat/wakil1.jpg" alt="Wakil A">
+        <?php
+        $no = 1;
+        while ($row = mysqli_fetch_assoc($query)) : ?>
+            <div class="kandidat-card">
+                <div class="foto-wrapper">
+                    <img src="../uploads/<?= $row['foto_ketua'] ?>">
+                    <img src="../uploads/<?= $row['foto_wakil'] ?>">
+                </div>
+                <h3><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></h3>
             </div>
-            <div class="kandidat-info">
-                <h3>Ketua A & Wakil A</h3>
-                <p>Kelas XI IPA 1</p>
-            </div>
-        </div>
+        <?php endwhile; ?>
 
-        <!-- Kandidat 2 -->
-        <div class="kandidat-card">
-            <div class="foto-wrapper">
-                <img src="assets/img/kandidat/ketua2.jpg" alt="Ketua B">
-                <img src="assets/img/kandidat/wakil2.jpg" alt="Wakil B">
-            </div>
-            <div class="kandidat-info">
-                <h3>Ketua B & Wakil B</h3>
-                <p>Kelas XI IPS 2</p>
-            </div>
-        </div>
-
-        <!-- Kandidat 3 -->
-        <div class="kandidat-card">
-            <div class="foto-wrapper">
-                <img src="assets/img/kandidat/ketua3.jpg" alt="Ketua C">
-                <img src="assets/img/kandidat/wakil3.jpg" alt="Wakil C">
-            </div>
-            <div class="kandidat-info">
-                <h3>Ketua C & Wakil C</h3>
-                <p>Kelas XI IPA 3</p>
-            </div>
-        </div>
+    </div>
+    <?php
+    $no = 1;
+    while ($row = mysqli_fetch_assoc($query)) : ?>
+        <tr>
+            <td><?= $no++; ?></td>
+            <td><?= $row['nomor_kandidat']; ?></td>
+            <td><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></td>
+            <td>100%</td>
+        </tr>
+    <?php endwhile; ?>
     </div>
 </body>
 

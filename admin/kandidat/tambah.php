@@ -25,7 +25,7 @@
             background: #fff;
             padding: 20px;
             width: 100%;
-            max-width: 500px;
+            max-width: 800px;
             border-radius: 8px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
@@ -74,8 +74,8 @@
 <body>
     <!-- Menu Tambah Kandidat -->
     <section class="card">
-        <h2>➕ Tambah Kandidat</h2>
-        <form action="proses_tambah.php" method="post" enctype="multipart/form-data">
+        <h2>Tambah</h2>
+        <form action="../api/proses-tambah.php" method="post" enctype="multipart/form-data">
             <label for="nomor_kandidat">Nomor Kandidat</label>
             <input type="number" id="nomor_kandidat" name="nomor_kandidat" placeholder="Masukkan nomor kandidat..." required>
 
