@@ -91,7 +91,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
 <body>
     <div class="kandidat-container">
         <?php
-        $no = 1;
         while ($row = mysqli_fetch_assoc($query)) : ?>
             <div class="kandidat-card">
                 <div class="foto-wrapper">
@@ -103,17 +102,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
         <?php endwhile; ?>
 
     </div>
-    <?php
-    $no = 1;
-    while ($row = mysqli_fetch_assoc($query)) : ?>
-        <tr>
-            <td><?= $no++; ?></td>
-            <td><?= $row['nomor_kandidat']; ?></td>
-            <td><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></td>
-            <td>100%</td>
-        </tr>
-    <?php endwhile; ?>
-    </div>
+
 </body>
 
 </html>
