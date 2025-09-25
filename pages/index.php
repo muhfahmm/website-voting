@@ -24,7 +24,6 @@
             min-height: 100vh;
             padding: 40px 20px;
         }
-
     </style>
 </head>
 
@@ -91,76 +90,75 @@
                 <h1>Form Voting Ketua & Wakil OSIS Skalsa</h1>
             </div>
             <div class="kandidat-slider">
-    <div class="slider-wrapper">
-        <?php while ($row = mysqli_fetch_assoc($query)) : ?>
-            <div class="kandidat-card" data-id="<?= $row['nomor_kandidat']; ?>">
-                <h3>Pasangan Nomor <?= $row['nomor_kandidat']; ?></h3>
-                <div class="card-wrapper">
-                    <div class="card">
-                        <div class="img">
-                            <img src="../admin/uploads/<?= $row['foto_ketua'] ?>">
+                <div class="slider-wrapper">
+                    <?php while ($row = mysqli_fetch_assoc($query)) : ?>
+                        <div class="kandidat-card" data-id="<?= $row['nomor_kandidat']; ?>">
+                            <h3>Pasangan Nomor <?= $row['nomor_kandidat']; ?></h3>
+                            <div class="card-wrapper">
+                                <div class="card">
+                                    <div class="img">
+                                        <img src="../admin/uploads/<?= $row['foto_ketua'] ?>">
+                                    </div>
+                                    <div class="data-user">
+                                        <h3><?= $row['nama_ketua']; ?></h3>
+                                        <p>Kelas: X-1</p>
+                                        <p><strong>Calon Ketua OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="img">
+                                        <img src="../admin/uploads/<?= $row['foto_wakil'] ?>">
+                                    </div>
+                                    <div class="data-user">
+                                        <h3><?= $row['nama_wakil']; ?></h3>
+                                        <p>Kelas: X-2</p>
+                                        <p><strong>Calon Wakil OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-vote">
+                                <button>Pilih Kandidat</button>
+                            </div>
                         </div>
-                        <div class="data-user">
-                            <h3><?= $row['nama_ketua']; ?></h3>
-                            <p>Kelas: X-1</p>
-                            <p><strong>Calon Ketua OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="img">
-                            <img src="../admin/uploads/<?= $row['foto_wakil'] ?>">
-                        </div>
-                        <div class="data-user">
-                            <h3><?= $row['nama_wakil']; ?></h3>
-                            <p>Kelas: X-2</p>
-                            <p><strong>Calon Wakil OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
-                        </div>
-                    </div>
+                    <?php endwhile; ?>
                 </div>
-                <div class="btn-vote">
-                    <button>Pilih Kandidat</button>
-                </div>
-                <p>klik kedua untuk membatalkan pilihan</p>
+
+                <!-- Tombol Navigasi -->
+                <button class="slider-btn prev">❮</button>
+                <button class="slider-btn next">❯</button>
+
+                <script>
+                    const sliderWrapper = document.querySelector('.slider-wrapper');
+                    const slides = document.querySelectorAll('.kandidat-card');
+                    const prevBtn = document.querySelector('.slider-btn.prev');
+                    const nextBtn = document.querySelector('.slider-btn.next');
+
+                    let currentIndex = 0;
+
+                    function updateSlider() {
+                        sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    }
+
+                    nextBtn.addEventListener('click', () => {
+                        if (currentIndex < slides.length - 1) {
+                            currentIndex++;
+                        } else {
+                            currentIndex = 0; // loop balik ke awal
+                        }
+                        updateSlider();
+                    });
+
+                    prevBtn.addEventListener('click', () => {
+                        if (currentIndex > 0) {
+                            currentIndex--;
+                        } else {
+                            currentIndex = slides.length - 1; // loop ke akhir
+                        }
+                        updateSlider();
+                    });
+                </script>
+
             </div>
-        <?php endwhile; ?>
-    </div>
-
-    <!-- Tombol Navigasi -->
-    <button class="slider-btn prev">❮</button>
-    <button class="slider-btn next">❯</button>
-
-    <script>
-    const sliderWrapper = document.querySelector('.slider-wrapper');
-    const slides = document.querySelectorAll('.kandidat-card');
-    const prevBtn = document.querySelector('.slider-btn.prev');
-    const nextBtn = document.querySelector('.slider-btn.next');
-
-    let currentIndex = 0;
-
-    function updateSlider() {
-        sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
-    }
-
-    nextBtn.addEventListener('click', () => {
-        if (currentIndex < slides.length - 1) {
-            currentIndex++;
-        } else {
-            currentIndex = 0; // loop balik ke awal
-        }
-        updateSlider();
-    });
-
-    prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) {
-            currentIndex--;
-        } else {
-            currentIndex = slides.length - 1; // loop ke akhir
-        }
-        updateSlider();
-    });
-</script>
-
-</div>
 
 
             <div class="form-user">
@@ -208,42 +206,50 @@
         const kandidatCards = document.querySelectorAll(".kandidat-card");
         const inputHidden = document.getElementById("kandidat_terpilih");
 
-        let selectedCard = null; // menyimpan kandidat yang dipilih
+        let selectedCard = null; // kandidat yang dipilih
 
         kandidatCards.forEach(card => {
-            card.addEventListener("click", () => {
-                // jika klik kandidat yang sama lagi → batalkan
+            const button = card.querySelector(".btn-vote button");
+
+            button.addEventListener("click", (e) => {
+                e.stopPropagation(); // supaya klik button tidak trigger klik card
+
+                // jika kandidat yang sama dipilih lagi → batal
                 if (selectedCard === card) {
                     card.classList.remove("active");
                     inputHidden.value = "";
                     selectedCard = null;
 
-                    // aktifkan kembali semua kandidat
+                    // reset semua tombol & aktifkan kembali semua kandidat
                     kandidatCards.forEach(c => {
                         c.classList.remove("disabled");
+                        c.querySelector(".btn-vote button").textContent = "Pilih Kandidat";
                     });
                     return;
                 }
 
-                // jika sudah ada pilihan → abaikan klik kandidat lain
+                // kalau sudah ada yang dipilih → abaikan klik kandidat lain
                 if (selectedCard) {
                     return;
                 }
 
-                // kalau belum ada yang dipilih → pilih kandidat ini
+                // pilih kandidat ini
                 card.classList.add("active");
                 inputHidden.value = card.dataset.id;
                 selectedCard = card;
+                button.textContent = "Batal Pilih";
 
-                // disable kandidat lain
+                // disable kandidat lain & reset text button mereka
                 kandidatCards.forEach(c => {
                     if (c !== card) {
                         c.classList.add("disabled");
+                        c.querySelector(".btn-vote button").textContent = "Pilih Kandidat";
                     }
                 });
             });
         });
     </script>
+
     <script src="assets/js/modal.js"></script>
 </body>
 
