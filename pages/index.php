@@ -34,11 +34,52 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Title */
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title h1 {
+            color: #2c3e50;
+            font-size: 26px;
+        }
+
+        .title p {
+            color: #555;
+            margin-top: 5px;
+        }
+
+        /* Kandidat Section */
         .kandidat {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .kandidat-card {
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .kandidat-card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .kandidat-card h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .card-wrapper {
+            display: flex;
+            justify-content: center;
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         .card {
@@ -48,22 +89,7 @@
             border-radius: 10px;
             padding: 20px;
             text-align: center;
-            transition: 0.3s;
         }
-
-        .card-wrapper {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card-wrapper:hover {
-            transform: translateY(-3px) scale(1);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-        }
-
 
         .card .img img {
             width: 120px;
@@ -84,12 +110,38 @@
             color: #555;
         }
 
+        /* Button */
+        .btn-vote {
+            text-align: center;
+        }
+
+        .btn-vote button {
+            padding: 10px 20px;
+            background: #2c3e50;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-vote button:hover {
+            background: #34495e;
+        }
+
+        /* Form */
         .form-user {
             margin-top: 30px;
             background: #f9f9f9;
             padding: 20px;
             border-radius: 8px;
             border: 1px solid #ddd;
+        }
+
+        .form-user h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
         }
 
         .form-user label {
@@ -117,50 +169,10 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
-            transition: 0.3s;
+            transition: background 0.3s ease;
         }
 
         .form-user button:hover {
-            background: #34495e;
-        }
-
-        .title {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .title h1 {
-            color: #2c3e50;
-            font-size: 26px;
-        }
-
-        .title p {
-            color: #555;
-            margin-top: 5px;
-        }
-
-        .card-wrapper {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-
-        .btn-vote {
-            text-align: center;
-        }
-
-        .btn-vote button {
-            padding: 10px 20px;
-            background: #2c3e50;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-vote button:hover {
             background: #34495e;
         }
     </style>
@@ -177,44 +189,43 @@
                 <h1>📊 Voting Ketua & Wakil OSIS</h1>
                 <p>Pilih kandidat favoritmu dengan bijak ✨</p>
             </div>
-            <div class="kandidat">
-                <?php
-                while ($row = mysqli_fetch_assoc($query)) : ?>
-                    <div class="kandidat-card">
-                        <div class="foto-wrapper">
-                            <div class="card-wrapper">
-                                <!-- Ketua -->
-                                <div class="card">
-                                    <div class="img">
-                                        <img src="../admin/uploads/<?= $row['foto_ketua'] ?>">
-                                    </div>
-                                    <div class="data-user">
-                                        <h3><?= $row['nama_ketua']; ?></h3>
-                                        <p>Kelas: X-1</p>
-                                        <p><strong>Calon Ketua</strong></p>
-                                    </div>
-                                </div>
 
-                                <!-- Wakil -->
-                                <div class="card">
-                                    <div class="img">
-                                        <img src="../admin/uploads/<?= $row['foto_wakil'] ?>">
-                                    </div>
-                                    <div class="data-user">
-                                        <h3><?= $row['nama_wakil']; ?></h3>
-                                        <p>Kelas: X-2</p>
-                                        <p><strong>Calon Wakil</strong></p>
-                                    </div>
+            <!-- Daftar Kandidat -->
+            <div class="kandidat">
+                <?php while ($row = mysqli_fetch_assoc($query)) : ?>
+                    <div class="kandidat-card">
+                        <h3>Pasangan Nomor <?= $row['nomor_kandidat']; ?></h3>
+                        <div class="card-wrapper">
+                            <!-- Ketua -->
+                            <div class="card">
+                                <div class="img">
+                                    <img src="../admin/uploads/<?= $row['foto_ketua'] ?>">
+                                </div>
+                                <div class="data-user">
+                                    <h3><?= $row['nama_ketua']; ?></h3>
+                                    <p>Kelas: X-1</p>
+                                    <p><strong>Calon Ketua</strong></p>
                                 </div>
                             </div>
 
-                            <!-- Button di bawah card -->
-                            <div class="btn-vote">
-                                <button>Pilih Kandidat</button>
+                            <!-- Wakil -->
+                            <div class="card">
+                                <div class="img">
+                                    <img src="../admin/uploads/<?= $row['foto_wakil'] ?>">
+                                </div>
+                                <div class="data-user">
+                                    <h3><?= $row['nama_wakil']; ?></h3>
+                                    <p>Kelas: X-2</p>
+                                    <p><strong>Calon Wakil</strong></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                        <!-- Button Pilih -->
+                        <div class="btn-vote">
+                            <button>Pilih Kandidat</button>
+                        </div>
+                    </div>
                 <?php endwhile; ?>
             </div>
 
