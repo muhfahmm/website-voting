@@ -123,7 +123,7 @@
                     </div>
                 <?php endwhile; ?>
             </div>
-            ---
+            
             <div class="form-user">
                 <h3>📝 Form Pemilih</h3>
                 <form action="" method="post">

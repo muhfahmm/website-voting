@@ -10,7 +10,19 @@ if (!isset($_SESSION['login'])) {
 
 $admin = $_SESSION['username'];
 
-$query = mysqli_query($db, "SELECT * FROM tb_kandidat");
+// Ambil data kandidat beserta jumlah suara
+$query = mysqli_query($db, "
+    SELECT k.nomor_kandidat, k.nama_ketua, k.nama_wakil, COUNT(v.id) AS total_suara
+    FROM tb_kandidat k
+    LEFT JOIN tb_vote_log v ON k.nomor_kandidat = v.nomor_kandidat
+    GROUP BY k.nomor_kandidat, k.nama_ketua, k.nama_wakil
+    ORDER BY k.nomor_kandidat ASC
+");
+
+// Hitung total semua suara
+$totalQuery = mysqli_query($db, "SELECT COUNT(*) AS total FROM tb_vote_log");
+$totalRow = mysqli_fetch_assoc($totalQuery);
+$totalVotes = $totalRow['total'];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -20,6 +32,47 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
     <title>Dashboard Admin - Voting OSIS</title>
     <link rel="stylesheet" href="./assets/css/index.css">
     <link rel="stylesheet" href="./assets/css/global.css">
+    <style>
+        .bar-chart {
+            margin-top: 20px;
+        }
+
+        .bar {
+            margin: 10px 0;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-label {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .bar-fill {
+            height: 30px;
+            line-height: 30px;
+            color: #fff;
+            text-align: right;
+            padding-right: 10px;
+            background: #3498db;
+            transition: width 0.5s ease;
+        }
+
+        .bar-fill.red {
+            background: #e74c3c;
+        }
+
+        .bar-fill.green {
+            background: #2ecc71;
+        }
+    </style>
 </head>
 
 <body>
@@ -42,7 +95,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
         <!-- Hasil Voting -->
         <section class="card">
             <h2>📊 Hasil Voting Sementara</h2>
-            <table>
+            <table border="1" cellspacing="0" cellpadding="8">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -55,37 +108,36 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
                     <?php
                     $no = 1;
                     if (mysqli_num_rows($query) > 0) {
-                        while ($row = mysqli_fetch_assoc($query)) : ?>
+                        while ($row = mysqli_fetch_assoc($query)) {
+                            $persentase = $totalVotes > 0 ? round(($row['total_suara'] / $totalVotes) * 100, 2) : 0;
+                    ?>
                             <tr>
                                 <td><?= $no++; ?></td>
-                                <td><?= $row['nomor_kandidat']; ?></td>
-                                <td><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></td>
-                                <td>100%</td>
+                                <td><?= $row['nama_ketua']; ?> & <?= $row['nama_wakil']; ?> (<?= $row['nomor_kandidat']; ?>)</td>
+                                <td><?= $row['total_suara']; ?></td>
+                                <td><?= $persentase; ?>%</td>
                             </tr>
-                        <?php endwhile;
-                    } else { ?>
-                        <tr>
-                            <td colspan="4" style="text-align:center; color: #888;">Kandidat kosong</td>
-                        </tr>
                     <?php
-                    } ?>
+                        }
+                    } else {
+                        echo '<tr><td colspan="4" style="text-align:center; color: #888;">Belum ada kandidat</td></tr>';
+                    }
+                    ?>
                 </tbody>
             </table>
 
-            <!-- Diagram -->
+            <!-- Diagram Bar -->
             <div class="bar-chart">
-                <div class="bar">
-                    <div class="bar-label">Ketua A & Wakil A</div>
-                    <div class="bar-fill" style="width: 40%;">40%</div>
-                </div>
-                <div class="bar">
-                    <div class="bar-label">Ketua B & Wakil B</div>
-                    <div class="bar-fill red" style="width: 30%;">30%</div>
-                </div>
-                <div class="bar">
-                    <div class="bar-label">Ketua C & Wakil C</div>
-                    <div class="bar-fill green" style="width: 30%;">30%</div>
-                </div>
+                <?php
+                mysqli_data_seek($query, 0); // reset pointer ke awal
+                while ($row = mysqli_fetch_assoc($query)) {
+                    $persentase = $totalVotes > 0 ? round(($row['total_suara'] / $totalVotes) * 100, 2) : 0;
+                ?>
+                    <div class="bar">
+                        <div class="bar-label"><?= $row['nama_ketua']; ?> & <?= $row['nama_wakil']; ?></div>
+                        <div class="bar-fill" style="width: <?= $persentase; ?>%;"><?= $persentase; ?>%</div>
+                    </div>
+                <?php } ?>
             </div>
         </section>
     </div>
