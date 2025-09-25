@@ -7,6 +7,7 @@
     <title>Voting Kandidat OSIS</title>
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/modal.css">
+    <link rel="stylesheet" href="assets/css/slider.css">
     <style>
         * {
             margin: 0;
@@ -31,7 +32,6 @@
     <?php
     require '../db/db.php';
 
-    // Handle vote submission logic (unchanged from your code)
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
 
         $nama_pemilih = $_POST['pemilih'];
@@ -83,7 +83,6 @@
         }
     }
 
-    // PHP to fetch candidates for the display section (unchanged)
     $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
     ?>
     <div class="container">
@@ -91,44 +90,84 @@
             <div class="title">
                 <h1>Form Voting Ketua & Wakil OSIS Skalsa</h1>
             </div>
-            <div class="kandidat">
-                <?php while ($row = mysqli_fetch_assoc($query)) : ?>
-                    <div class="kandidat-card" data-id="<?= $row['nomor_kandidat']; ?>">
-                        <h3>Pasangan Nomor <?= $row['nomor_kandidat']; ?></h3>
-                        <div class="card-wrapper">
-                            <div class="card">
-                                <div class="img">
-                                    <img src="../admin/uploads/<?= $row['foto_ketua'] ?>">
-                                </div>
-                                <div class="data-user">
-                                    <h3><?= $row['nama_ketua']; ?></h3>
-                                    <p>Kelas: X-1</p>
-                                    <p><strong>Calon Ketua OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="img">
-                                    <img src="../admin/uploads/<?= $row['foto_wakil'] ?>">
-                                </div>
-                                <div class="data-user">
-                                    <h3><?= $row['nama_wakil']; ?></h3>
-                                    <p>Kelas: X-2</p>
-                                    <p><strong>Calon Wakil OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
-                                </div>
-                            </div>
+            <div class="kandidat-slider">
+    <div class="slider-wrapper">
+        <?php while ($row = mysqli_fetch_assoc($query)) : ?>
+            <div class="kandidat-card" data-id="<?= $row['nomor_kandidat']; ?>">
+                <h3>Pasangan Nomor <?= $row['nomor_kandidat']; ?></h3>
+                <div class="card-wrapper">
+                    <div class="card">
+                        <div class="img">
+                            <img src="../admin/uploads/<?= $row['foto_ketua'] ?>">
                         </div>
-                        <div class="btn-vote">
-                            <button>Pilih Kandidat</button>
+                        <div class="data-user">
+                            <h3><?= $row['nama_ketua']; ?></h3>
+                            <p>Kelas: X-1</p>
+                            <p><strong>Calon Ketua OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
                         </div>
                     </div>
-                <?php endwhile; ?>
+                    <div class="card">
+                        <div class="img">
+                            <img src="../admin/uploads/<?= $row['foto_wakil'] ?>">
+                        </div>
+                        <div class="data-user">
+                            <h3><?= $row['nama_wakil']; ?></h3>
+                            <p>Kelas: X-2</p>
+                            <p><strong>Calon Wakil OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-vote">
+                    <button>Pilih Kandidat</button>
+                </div>
+                <p>klik kedua untuk membatalkan pilihan</p>
             </div>
-            
+        <?php endwhile; ?>
+    </div>
+
+    <!-- Tombol Navigasi -->
+    <button class="slider-btn prev">❮</button>
+    <button class="slider-btn next">❯</button>
+
+    <script>
+    const sliderWrapper = document.querySelector('.slider-wrapper');
+    const slides = document.querySelectorAll('.kandidat-card');
+    const prevBtn = document.querySelector('.slider-btn.prev');
+    const nextBtn = document.querySelector('.slider-btn.next');
+
+    let currentIndex = 0;
+
+    function updateSlider() {
+        sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+
+    nextBtn.addEventListener('click', () => {
+        if (currentIndex < slides.length - 1) {
+            currentIndex++;
+        } else {
+            currentIndex = 0; // loop balik ke awal
+        }
+        updateSlider();
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+        } else {
+            currentIndex = slides.length - 1; // loop ke akhir
+        }
+        updateSlider();
+    });
+</script>
+
+</div>
+
+
             <div class="form-user">
                 <h3>📝 Form Pemilih</h3>
                 <form action="" method="post">
                     <label for="pemilih">Nama Pemilih</label>
-                    <input type="text" id="pemilih" name="pemilih">
+                    <input type="text" id="pemilih" name="pemilih" autocomplete="off">
                     <label for="kelas">Kelas Pemilih</label>
                     <select id="kelas" name="kelas">
                         <option value="">Pilih Kelas</option>
@@ -147,7 +186,7 @@
         </div>
     </div>
 
-    <!-- Modal Warning -->
+    <!-- Modal -->
     <div id="modalWarning" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>

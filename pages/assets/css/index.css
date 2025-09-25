@@ -20,23 +20,24 @@
             font-size: 26px;
         }
 
-        .kandidat {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
+    .kandidat {
+        display: flex;
+        flex-direction: row;  /* horizontal */
+        gap: 30px;
+        margin-bottom: 40px;
+        overflow-x: auto;      /* biar bisa digeser */
+        scroll-snap-type: x mandatory; /* snap effect */
+        -webkit-overflow-scrolling: touch;
+    }
 
-        .kandidat-card {
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid transparent;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-            cursor: pointer;
-        }
+
+    .kandidat-card {
+        flex: 0 0 300px; /* lebar tiap kartu tetap */
+        scroll-snap-align: center;
+    }
+
 
         .kandidat-card:hover {
-            transform: scale(1.01);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
         }
 
@@ -75,8 +76,8 @@
         }
 
         .card .img img {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid #2c3e50;

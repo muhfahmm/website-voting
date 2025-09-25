@@ -47,6 +47,7 @@ $totalVotes = $totalRow['total'];
     <style>
         .bar-chart {
             margin-top: 20px;
+            margin-bottom: 100px;
         }
 
         .bar {
