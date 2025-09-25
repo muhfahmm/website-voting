@@ -51,10 +51,19 @@
             transition: 0.3s;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        .card-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
+        .card-wrapper:hover {
+            transform: translateY(-3px) scale(1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
 
         .card .img img {
             width: 120px;
@@ -129,6 +138,31 @@
             color: #555;
             margin-top: 5px;
         }
+
+        .card-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .btn-vote {
+            text-align: center;
+        }
+
+        .btn-vote button {
+            padding: 10px 20px;
+            background: #2c3e50;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-vote button:hover {
+            background: #34495e;
+        }
     </style>
 </head>
 
@@ -148,8 +182,6 @@
                 while ($row = mysqli_fetch_assoc($query)) : ?>
                     <div class="kandidat-card">
                         <div class="foto-wrapper">
-
-
                             <div class="card-wrapper">
                                 <!-- Ketua -->
                                 <div class="card">
@@ -174,24 +206,15 @@
                                         <p><strong>Calon Wakil</strong></p>
                                     </div>
                                 </div>
-
-                                <button>pilih kandidat</button>
                             </div>
-                            <style>
-                                .card-wrapper {
-                                    display: flex;
-                                }
 
-                                .foto-wrapper img {
-                                    width: 100px;
-                                    height: 100px;
-                                    object-fit: cover;
-                                    border-radius: 50%;
-                                    border: 2px solid #2c3e50;
-                                }
-                            </style>
+                            <!-- Button di bawah card -->
+                            <div class="btn-vote">
+                                <button>Pilih Kandidat</button>
+                            </div>
                         </div>
                     </div>
+
                 <?php endwhile; ?>
             </div>
 
