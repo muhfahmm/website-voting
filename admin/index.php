@@ -10,7 +10,7 @@ if (!isset($_SESSION['login'])) {
 
 $admin = $_SESSION['username'];
 
-$query = mysqli_query($db, "SELECT * FROM tb_kandidat")
+$query = mysqli_query($db, "SELECT * FROM tb_kandidat");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -54,14 +54,21 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat")
                 <tbody>
                     <?php
                     $no = 1;
-                    while ($row = mysqli_fetch_assoc($query)) : ?>
+                    if (mysqli_num_rows($query) > 0) {
+                        while ($row = mysqli_fetch_assoc($query)) : ?>
+                            <tr>
+                                <td><?= $no++; ?></td>
+                                <td><?= $row['nomor_kandidat']; ?></td>
+                                <td><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></td>
+                                <td>100%</td>
+                            </tr>
+                        <?php endwhile;
+                    } else { ?>
                         <tr>
-                            <td><?= $no++; ?></td>
-                            <td><?= $row['nomor_kandidat']; ?></td>
-                            <td><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></td>
-                            <td>100%</td>
+                            <td colspan="4" style="text-align:center; color: #888;">Kandidat kosong</td>
                         </tr>
-                    <?php endwhile; ?>
+                    <?php
+                    } ?>
                 </tbody>
             </table>
 
