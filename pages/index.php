@@ -22,12 +22,77 @@
             min-height: 100vh;
             padding: 40px 20px;
         }
+
+        /* Style for the select dropdown */
+        .form-user select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
     </style>
 </head>
 
 <body>
     <?php
     require '../db/db.php';
+
+    // Handle vote submission logic (unchanged from your code)
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
+
+        $nama_pemilih = $_POST['pemilih'];
+        $kelas_pemilih = $_POST['kelas'];
+        $kandidat_terpilih = $_POST['kandidat_terpilih'];
+
+        if (empty($nama_pemilih) || empty($kelas_pemilih) || empty($kandidat_terpilih)) {
+            echo "<script>alert('⚠️ Semua field wajib diisi!'); window.location.href='index.php';</script>";
+            exit();
+        }
+
+        mysqli_begin_transaction($db);
+
+        try {
+            $sql_voter = "INSERT INTO tb_voter (nama_voter, kelas) VALUES (?, ?)";
+            $stmt_voter = mysqli_prepare($db, $sql_voter);
+            mysqli_stmt_bind_param($stmt_voter, "ss", $nama_pemilih, $kelas_pemilih);
+            mysqli_stmt_execute($stmt_voter);
+
+            $voter_id = mysqli_insert_id($db);
+            mysqli_stmt_close($stmt_voter);
+
+            $sql_vote_log = "INSERT INTO tb_vote_log (voter_id, nomor_kandidat) VALUES (?, ?)";
+            $stmt_vote_log = mysqli_prepare($db, $sql_vote_log);
+            mysqli_stmt_bind_param($stmt_vote_log, "ii", $voter_id, $kandidat_terpilih);
+            mysqli_stmt_execute($stmt_vote_log);
+            mysqli_stmt_close($stmt_vote_log);
+
+            $sql_update_result = "UPDATE tb_vote_result SET jumlah_vote = jumlah_vote + 1 WHERE nomor_kandidat = ?";
+            $stmt_update_result = mysqli_prepare($db, $sql_update_result);
+            mysqli_stmt_bind_param($stmt_update_result, "i", $kandidat_terpilih);
+            mysqli_stmt_execute($stmt_update_result);
+            mysqli_stmt_close($stmt_update_result);
+
+            mysqli_commit($db);
+
+            echo "<script>alert('✅ Vote berhasil disimpan. Terima kasih sudah memilih!'); window.location.href='index.php';</script>";
+        } catch (mysqli_sql_exception $e) {
+            mysqli_rollback($db);
+
+            $errorMessage = "Terjadi kesalahan saat memproses vote. Silakan coba lagi.";
+            if (strpos($e->getMessage(), 'Duplicate entry') !== false && strpos($e->getMessage(), 'voter_id') !== false) {
+                $errorMessage = "Anda hanya bisa melakukan vote sekali.";
+            }
+            echo "<script>alert('⚠️ " . $errorMessage . "'); window.location.href='index.php';</script>";
+        } finally {
+            mysqli_close($db);
+            exit();
+        }
+    }
+
+    // PHP to fetch candidates for the display section (unchanged)
     $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
     ?>
     <div class="container">
@@ -35,13 +100,11 @@
             <div class="title">
                 <h1>Form Voting Ketua & Wakil OSIS Skalsa</h1>
             </div>
-            <!-- Daftar Kandidat -->
             <div class="kandidat">
                 <?php while ($row = mysqli_fetch_assoc($query)) : ?>
                     <div class="kandidat-card" data-id="<?= $row['nomor_kandidat']; ?>">
                         <h3>Pasangan Nomor <?= $row['nomor_kandidat']; ?></h3>
                         <div class="card-wrapper">
-                            <!-- Ketua -->
                             <div class="card">
                                 <div class="img">
                                     <img src="../admin/uploads/<?= $row['foto_ketua'] ?>">
@@ -52,7 +115,6 @@
                                     <p><strong>Calon Ketua OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
                                 </div>
                             </div>
-                            <!-- Wakil -->
                             <div class="card">
                                 <div class="img">
                                     <img src="../admin/uploads/<?= $row['foto_wakil'] ?>">
@@ -64,24 +126,28 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Button Pilih -->
                         <div class="btn-vote">
                             <button>Pilih Kandidat</button>
                         </div>
                     </div>
                 <?php endwhile; ?>
             </div>
-
-            <!-- Form Pemilih -->
+            ---
             <div class="form-user">
                 <h3>📝 Form Pemilih</h3>
-                <form action="proses_vote.php" method="post">
+                <form action="" method="post">
                     <label for="pemilih">Nama Pemilih</label>
                     <input type="text" id="pemilih" name="pemilih" required>
                     <label for="kelas">Kelas Pemilih</label>
-                    <input type="text" id="kelas" name="kelas" required>
+                    <select id="kelas" name="kelas" required>
+                        <option value="">Pilih Kelas</option>
+                        <option value="X-1">X-1</option>
+                        <option value="X-2">X-2</option>
+                        <option value="XI-1">XI-1</option>
+                        <option value="XI-2">XI-2</option>
+                        <option value="XII">XII</option>
+                    </select>
 
-                    <!-- Input tersembunyi untuk kandidat yang dipilih -->
                     <input type="hidden" name="kandidat_terpilih" id="kandidat_terpilih">
 
                     <button type="submit" name="kirim">✅ Kirim Vote</button>
@@ -139,8 +205,6 @@
             });
         });
     </script>
-
-
 </body>
 
 </html>
