@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../db/db.php';
+require '../../db/db.php';
 
 // cek login
 if (!isset($_SESSION['login'])) {
@@ -30,8 +30,8 @@ $totalVotes = $totalRow['total'];
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Admin - Voting OSIS</title>
-    <link rel="stylesheet" href="./assets/css/index.css">
-    <link rel="stylesheet" href="./assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/global.css">
     <style>
         .bar-chart {
             margin-top: 20px;
@@ -80,7 +80,6 @@ $totalVotes = $totalRow['total'];
         <h2>Admin Panel</h2>
         <ul>
             <li><a href="#">🏠 Dashboard</a></li>
-            <li><a href="hasil-vote/result.php">📋 Daftar Kandidat</a></li>
             <li><a href="kandidat/tambah.php">➕ Tambah Kandidat</a></li>
             <li><a href="kandidat/daftar.php">📋 Daftar Kandidat</a></li>
             <li><a href="./auth/logout.php">🚪 Logout</a></li>
@@ -92,41 +91,6 @@ $totalVotes = $totalRow['total'];
             <h1>Dashboard Admin</h1>
             <p>Selamat datang, <b><?php echo htmlspecialchars($admin); ?></b></p>
         </header>
-
-        <!-- Hasil Voting -->
-        <section class="card">
-            <h2>📊 Hasil Voting Sementara</h2>
-            <table border="1" cellspacing="0" cellpadding="8">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Pasangan Kandidat</th>
-                        <th>Jumlah Suara</th>
-                        <th>Persentase</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $no = 1;
-                    if (mysqli_num_rows($query) > 0) {
-                        while ($row = mysqli_fetch_assoc($query)) {
-                            $persentase = $totalVotes > 0 ? round(($row['total_suara'] / $totalVotes) * 100, 2) : 0;
-                    ?>
-                            <tr>
-                                <td><?= $no++; ?></td>
-                                <td><?= $row['nama_ketua']; ?> & <?= $row['nama_wakil']; ?> (<?= $row['nomor_kandidat']; ?>)</td>
-                                <td><?= $row['total_suara']; ?></td>
-                                <td><?= $persentase; ?>%</td>
-                            </tr>
-                    <?php
-                        }
-                    } else {
-                        echo '<tr><td colspan="4" style="text-align:center; color: #888;">Belum ada kandidat</td></tr>';
-                    }
-                    ?>
-                </tbody>
-            </table>
-
             <!-- Diagram Bar -->
             <div class="bar-chart">
                 <?php
