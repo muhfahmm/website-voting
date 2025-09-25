@@ -135,61 +135,64 @@
 <body>
     <?php
     require '../db/db.php';
-
     $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
     ?>
-    
-    <?php
-    while ($row = mysqli_fetch_assoc($query)) : ?>
-        <div class="kandidat-card">
-            <div class="foto-wrapper">
-                <img src="../admin/uploads/<?= $row['foto_ketua'] ?>">
-                <img src="../admin/uploads/<?= $row['foto_wakil'] ?>">
-                <style>
-                    .foto-wrapper img {
-                        width: 100px;
-                        height: 100px;
-                        object-fit: cover;
-                        border-radius: 50%;
-                        border: 2px solid #2c3e50;
-                    }
-                </style>
-            </div>
-            <h3><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></h3>
-        </div>
-    <?php endwhile; ?>
-    
     <div class="container">
         <div class="wrapper">
             <div class="title">
                 <h1>📊 Voting Ketua & Wakil OSIS</h1>
                 <p>Pilih kandidat favoritmu dengan bijak ✨</p>
             </div>
-
             <div class="kandidat">
-                <!-- Ketua -->
-                <div class="card">
-                    <div class="img">
-                        <img src="uploads/ketua.jpg" alt="Foto Ketua">
-                    </div>
-                    <div class="data-user">
-                        <h3>Nama Ketua</h3>
-                        <p>Kelas: X-1</p>
-                        <p><strong>Calon Ketua</strong></p>
-                    </div>
-                </div>
+                <?php
+                while ($row = mysqli_fetch_assoc($query)) : ?>
+                    <div class="kandidat-card">
+                        <div class="foto-wrapper">
 
-                <!-- Wakil -->
-                <div class="card">
-                    <div class="img">
-                        <img src="uploads/wakil.jpg" alt="Foto Wakil">
+
+                            <div class="card-wrapper">
+                                <!-- Ketua -->
+                                <div class="card">
+                                    <div class="img">
+                                        <img src="../admin/uploads/<?= $row['foto_ketua'] ?>">
+                                    </div>
+                                    <div class="data-user">
+                                        <h3><?= $row['nama_ketua']; ?></h3>
+                                        <p>Kelas: X-1</p>
+                                        <p><strong>Calon Ketua</strong></p>
+                                    </div>
+                                </div>
+
+                                <!-- Wakil -->
+                                <div class="card">
+                                    <div class="img">
+                                        <img src="../admin/uploads/<?= $row['foto_wakil'] ?>">
+                                    </div>
+                                    <div class="data-user">
+                                        <h3><?= $row['nama_wakil']; ?></h3>
+                                        <p>Kelas: X-2</p>
+                                        <p><strong>Calon Wakil</strong></p>
+                                    </div>
+                                </div>
+
+                                <button>pilih kandidat</button>
+                            </div>
+                            <style>
+                                .card-wrapper {
+                                    display: flex;
+                                }
+
+                                .foto-wrapper img {
+                                    width: 100px;
+                                    height: 100px;
+                                    object-fit: cover;
+                                    border-radius: 50%;
+                                    border: 2px solid #2c3e50;
+                                }
+                            </style>
+                        </div>
                     </div>
-                    <div class="data-user">
-                        <h3>Nama Wakil</h3>
-                        <p>Kelas: X-2</p>
-                        <p><strong>Calon Wakil</strong></p>
-                    </div>
-                </div>
+                <?php endwhile; ?>
             </div>
 
             <!-- Form Pemilih -->
