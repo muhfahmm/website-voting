@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voting Kandidat OSIS</title>
     <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="assets/css/modal.css">
     <style>
         * {
             margin: 0;
@@ -23,16 +24,6 @@
             padding: 40px 20px;
         }
 
-        /* Style for the select dropdown */
-        .form-user select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-top: 5px;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
     </style>
 </head>
 
@@ -137,9 +128,9 @@
                 <h3>📝 Form Pemilih</h3>
                 <form action="" method="post">
                     <label for="pemilih">Nama Pemilih</label>
-                    <input type="text" id="pemilih" name="pemilih" required>
+                    <input type="text" id="pemilih" name="pemilih">
                     <label for="kelas">Kelas Pemilih</label>
-                    <select id="kelas" name="kelas" required>
+                    <select id="kelas" name="kelas">
                         <option value="">Pilih Kelas</option>
                         <option value="X-1">X-1</option>
                         <option value="X-2">X-2</option>
@@ -156,6 +147,16 @@
         </div>
     </div>
 
+    <!-- Modal Warning -->
+    <div id="modalWarning" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>⚠️ Form Belum Lengkap</h2>
+            <p>Harap isi semua field dan pilih kandidat sebelum mengirim vote.</p>
+            <button id="closeBtn">OK</button>
+        </div>
+    </div>
+
     <style>
         /* Tambahan style kandidat non-aktif */
         .kandidat-card.disabled {
@@ -164,7 +165,6 @@
             opacity: 0.7;
         }
     </style>
-
     <script>
         const kandidatCards = document.querySelectorAll(".kandidat-card");
         const inputHidden = document.getElementById("kandidat_terpilih");
@@ -205,6 +205,7 @@
             });
         });
     </script>
+    <script src="assets/js/modal.js"></script>
 </body>
 
 </html>
