@@ -19,6 +19,17 @@ $query = mysqli_query($db, "
     ORDER BY k.nomor_kandidat ASC
 ");
 
+// Ambil data untuk Chart.js
+$labels = [];
+$dataVotes = [];
+while ($row = mysqli_fetch_assoc($query)) {
+    $labels[] = $row['nama_ketua'] . " & " . $row['nama_wakil'];
+    $dataVotes[] = $row['total_suara'];
+}
+
+// Reset pointer untuk diagram bar custom
+mysqli_data_seek($query, 0);
+
 // Hitung total semua suara
 $totalQuery = mysqli_query($db, "SELECT COUNT(*) AS total FROM tb_vote_log");
 $totalRow = mysqli_fetch_assoc($totalQuery);
@@ -32,45 +43,52 @@ $totalVotes = $totalRow['total'];
     <title>Dashboard Admin - Voting OSIS</title>
     <link rel="stylesheet" href="../assets/css/index.css">
     <link rel="stylesheet" href="../assets/css/global.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .bar-chart {
             margin-top: 20px;
         }
 
         .bar {
-            margin: 10px 0;
+            margin: 15px 0;
             background: #eee;
             border-radius: 5px;
             overflow: hidden;
             position: relative;
-        }
-
-        .bar-label {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
+            padding: 5px;
+            width: 100%;
         }
 
         .bar-fill {
-            height: 30px;
-            line-height: 30px;
-            color: #fff;
-            text-align: right;
-            padding-right: 10px;
+            height: 50px;
+            border-radius: 4px;
             background: #3498db;
+            position: relative;
+            overflow: hidden;
             transition: width 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .bar-fill.red {
-            background: #e74c3c;
+        .bar-percent {
+            font-size: 13px;
+            font-weight: bold;
+            color: #fff;
         }
 
-        .bar-fill.green {
-            background: #2ecc71;
+        .bar-name {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .chart-container {
+            width: 45%;
+            margin: 20px;
+            display: inline-block;
+            vertical-align: top;
         }
     </style>
 </head>
@@ -91,21 +109,73 @@ $totalVotes = $totalRow['total'];
             <h1>Dashboard Admin</h1>
             <p>Selamat datang, <b><?php echo htmlspecialchars($admin); ?></b></p>
         </header>
-            <!-- Diagram Bar -->
-            <div class="bar-chart">
-                <?php
-                mysqli_data_seek($query, 0); // reset pointer ke awal
-                while ($row = mysqli_fetch_assoc($query)) {
-                    $persentase = $totalVotes > 0 ? round(($row['total_suara'] / $totalVotes) * 100, 2) : 0;
-                ?>
-                    <div class="bar">
-                        <div class="bar-label"><?= $row['nama_ketua']; ?> & <?= $row['nama_wakil']; ?></div>
-                        <div class="bar-fill" style="width: <?= $persentase; ?>%;"><?= $persentase; ?>%</div>
+
+        <!-- Diagram Bar Horizontal (yang lama) -->
+        <h2>📊 Diagram Batang Horizontal</h2>
+        <div class="bar-chart">
+            <?php
+            while ($row = mysqli_fetch_assoc($query)) {
+                $persentase = $totalVotes > 0 ? round(($row['total_suara'] / $totalVotes) * 100, 2) : 0;
+            ?>
+                <div class="bar">
+                    <span class="bar-name"><?= $row['nama_ketua']; ?> & <?= $row['nama_wakil']; ?></span>
+                    <div class="bar-fill" style="width: <?= $persentase; ?>%;">
+                        <span class="bar-percent"><?= $persentase; ?>%</span>
                     </div>
-                <?php } ?>
-            </div>
-        </section>
+                </div>
+            <?php } ?>
+        </div>
+
+        <!-- Tambahan Chart.js -->
+        <h2>📈 Diagram Lainnya</h2>
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="barChart"></canvas>
+        </div>
     </div>
+
+    <script>
+        const labels = <?php echo json_encode($labels); ?>;
+        const dataVotes = <?php echo json_encode($dataVotes); ?>;
+
+        // Pie Chart
+        new Chart(document.getElementById('pieChart'), {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataVotes,
+                    backgroundColor: ['#3498db', '#e74c3c', '#2ecc71', '#f1c40f', '#9b59b6']
+                }]
+            }
+        });
+
+
+        // Bar Chart Vertikal
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Suara',
+                    data: dataVotes,
+                    backgroundColor: '#3498db'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
