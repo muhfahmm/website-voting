@@ -84,7 +84,11 @@
 
     $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
     ?>
-    <div class="container">
+    <div class="container"
+        style=" display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;">
         <div class="wrapper">
             <div class="title">
                 <h1>Form Voting Ketua & Wakil OSIS Skalsa</h1>
@@ -162,7 +166,10 @@
 
 
             <div class="form-user">
-                <h3>📝 Form Pemilih</h3>
+                <div style="margin-bottom: 20px;">
+                    <h3>Form Pemilih</h3>
+                    <p style="color: red; font-family:'Lucida Sans';">Wajib diisi!</p>
+                </div>
                 <form action="" method="post">
                     <label for="pemilih">Nama Pemilih</label>
                     <input type="text" id="pemilih" name="pemilih" autocomplete="off">

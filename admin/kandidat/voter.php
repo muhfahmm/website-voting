@@ -39,8 +39,8 @@ while ($row = mysqli_fetch_assoc($votedQuery)) {
 $dataKelas = [
     "X-1"   => 10,
     "X-2"   => 20,
-    "XI-1"  => 25,
-    "XI-2"  => 30,
+    "XI-1"  => 28,
+    "XI-2"  => 28,
     "XII"   => 35
 ];
 
