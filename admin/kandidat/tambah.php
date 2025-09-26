@@ -1,3 +1,13 @@
+<?php
+session_start();
+require '../../db/db.php';
+
+// cek login
+if (!isset($_SESSION['login'])) {
+    header("Location: ../auth/login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -15,10 +25,51 @@
         body {
             background: #f4f6f9;
             display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background: #2c3e50;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
+            background: #34495e;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+            display: flex;
             justify-content: center;
             align-items: flex-start;
-            min-height: 100vh;
-            padding: 40px 20px;
         }
 
         .card {
@@ -72,33 +123,47 @@
 </head>
 
 <body>
-    <!-- Menu Tambah Kandidat -->
-    <section class="card">
-        <h2>Tambah</h2>
-        <form action="../api/proses-tambah.php" method="post" enctype="multipart/form-data">
-            <label for="nomor_kandidat">Nomor Kandidat</label>
-            <input type="number" id="nomor_kandidat" name="nomor_kandidat" placeholder="Masukkan nomor kandidat..." required>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="../index.php">🏠 Dashboard</a></li>
+            <li><a href="../hasil-vote/result.php">📋 Hasil</a></li>
+            <li><a href="../kandidat/tambah.php" class="active">➕ Tambah Kandidat</a></li>
+            <li><a href="../kandidat/daftar.php">📋 Daftar Kandidat</a></li>
+            <li><a href="../auth/logout.php">🚪 Logout</a></li>
+        </ul>
+    </div>
 
-            <label for="nama_ketua">Nama Ketua</label>
-            <input type="text" id="nama_ketua" name="nama_ketua" placeholder="Masukkan nama ketua..." required>
+    <!-- Konten Tambah Kandidat -->
+    <section class="main-content">
+        <div class="card">
+            <h2>Tambah Kandidat</h2>
+            <form action="../api/proses-tambah.php" method="post" enctype="multipart/form-data">
+                <label for="nomor_kandidat">Nomor Kandidat</label>
+                <input type="number" id="nomor_kandidat" name="nomor_kandidat" placeholder="Masukkan nomor kandidat..." required>
 
-            <label for="kelas_ketua">Kelas Ketua</label>
-            <input type="text" id="kelas_ketua" name="kelas_ketua" placeholder="Masukkan kelas ketua..." required>
+                <label for="nama_ketua">Nama Ketua</label>
+                <input type="text" id="nama_ketua" name="nama_ketua" placeholder="Masukkan nama ketua..." required>
 
-            <label for="foto_ketua">Foto Ketua</label>
-            <input type="file" id="foto_ketua" name="foto_ketua" required>
+                <label for="kelas_ketua">Kelas Ketua</label>
+                <input type="text" id="kelas_ketua" name="kelas_ketua" placeholder="Masukkan kelas ketua..." required>
 
-            <label for="nama_wakil">Nama Wakil</label>
-            <input type="text" id="nama_wakil" name="nama_wakil" placeholder="Masukkan nama wakil..." required>
+                <label for="foto_ketua">Foto Ketua</label>
+                <input type="file" id="foto_ketua" name="foto_ketua" required>
 
-            <label for="kelas_wakil">Kelas Wakil</label>
-            <input type="text" id="kelas_wakil" name="kelas_wakil" placeholder="Masukkan kelas wakil..." required>
+                <label for="nama_wakil">Nama Wakil</label>
+                <input type="text" id="nama_wakil" name="nama_wakil" placeholder="Masukkan nama wakil..." required>
 
-            <label for="foto_wakil">Foto Wakil</label>
-            <input type="file" id="foto_wakil" name="foto_wakil" required>
+                <label for="kelas_wakil">Kelas Wakil</label>
+                <input type="text" id="kelas_wakil" name="kelas_wakil" placeholder="Masukkan kelas wakil..." required>
 
-            <button type="submit">Simpan</button>
-        </form>
+                <label for="foto_wakil">Foto Wakil</label>
+                <input type="file" id="foto_wakil" name="foto_wakil" required>
+
+                <button type="submit">Simpan</button>
+            </form>
+        </div>
     </section>
 </body>
 

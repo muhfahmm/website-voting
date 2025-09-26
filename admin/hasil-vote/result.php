@@ -4,7 +4,7 @@ require '../../db/db.php';
 
 // cek login
 if (!isset($_SESSION['login'])) {
-    header("Location: auth/login.php");
+    header("Location: ../auth/login.php");
     exit;
 }
 
@@ -45,6 +45,44 @@ $totalVotes = $totalRow['total'];
     <link rel="stylesheet" href="../assets/css/global.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        .sidebar {
+            width: 220px;
+            background: #2c3e50;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background: #34495e;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
         .bar-chart {
             margin-top: 20px;
             margin-bottom: 100px;
@@ -107,11 +145,6 @@ $totalVotes = $totalRow['total'];
     </div>
 
     <div class="main-content">
-        <header>
-            <h1>Dashboard Admin</h1>
-            <p>Selamat datang, <b><?php echo htmlspecialchars($admin); ?></b></p>
-        </header>
-
         <!-- Diagram Bar Horizontal (yang lama) -->
         <h2>📊 Diagram Batang Horizontal</h2>
         <div class="bar-chart">
