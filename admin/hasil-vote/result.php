@@ -99,7 +99,7 @@ $totalVotes = $totalRow['total'];
         <h2>Admin Panel</h2>
         <ul>
             <li><a href="../index.php">🏠 Dashboard</a></li>
-            <li><a href="result.php">➕ Hasil</a></li>
+            <li><a href="result.php">📋 Hasil</a></li>
             <li><a href="../kandidat/tambah.php">➕ Tambah Kandidat</a></li>
             <li><a href="../kandidat/daftar.php">📋 Daftar Kandidat</a></li>
             <li><a href="../auth/logout.php">🚪 Logout</a></li>
