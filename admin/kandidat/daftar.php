@@ -49,7 +49,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
                         <img src="../uploads/<?= $row['foto_wakil'] ?>">
                     </div>
                     <h3><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></h3>
-                    <a href="hapus.php?id=<?= $row['id']; ?>">Hapus</a> |
+                    <a href="hapus.php?id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus kandidat ini?')">Hapus</a> |
                     <a href="edit.php?id=<?= $row['id']; ?>">Edit</a>
                 </div>
             <?php endwhile;
