@@ -4,7 +4,6 @@ require '../../db/db.php';
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    // Hapus data dari DB
     $query = mysqli_query($db, "DELETE FROM tb_kandidat WHERE id = '$id'");
 
     if ($query) {
