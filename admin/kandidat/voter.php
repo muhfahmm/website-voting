@@ -10,12 +10,24 @@ if (!isset($_SESSION['login'])) {
 
 $admin = $_SESSION['username'];
 
-// --- Ambil daftar voter yang sudah memilih ---
+// --- Pagination setup ---
+$limit = 10; // jumlah data per halaman
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
+
+// Hitung total data
+$totalQuery = mysqli_query($db, "SELECT COUNT(*) as total FROM tb_voter v JOIN tb_vote_log l ON v.id = l.voter_id");
+$totalRow = mysqli_fetch_assoc($totalQuery);
+$totalData = $totalRow['total'];
+$totalPages = ceil($totalData / $limit);
+
+// Ambil data voter dengan pagination
 $votedQuery = mysqli_query($db, "
     SELECT v.id, v.nama_voter, v.kelas, l.nomor_kandidat
     FROM tb_voter v
     JOIN tb_vote_log l ON v.id = l.voter_id
     ORDER BY v.kelas, v.nama_voter
+    LIMIT $limit OFFSET $offset
 ");
 
 $voters = [];
@@ -23,13 +35,13 @@ while ($row = mysqli_fetch_assoc($votedQuery)) {
     $voters[] = $row;
 }
 
-// --- Data target siswa per kelas (bisa dimodifikasi sendiri) ---
+// jumlah siswa setiap kelas
 $dataKelas = [
-    "X-1"    => 10,
-    "X-2"    => 20,
+    "X-1"   => 10,
+    "X-2"   => 20,
     "XI-1"  => 25,
     "XI-2"  => 30,
-    "XII" => 35
+    "XII"   => 35
 ];
 
 // --- Hitung berapa yang sudah vote per kelas ---
@@ -91,6 +103,7 @@ while ($row = mysqli_fetch_assoc($q)) {
             display: flex;
             min-height: 100vh;
             background: #f4f6f9;
+            font-family: Arial, sans-serif;
         }
 
         /* Sidebar */
@@ -120,7 +133,6 @@ while ($row = mysqli_fetch_assoc($q)) {
             display: block;
             padding: 8px 10px;
             border-radius: 5px;
-            transition: 0.3s;
         }
 
         .sidebar ul li a:hover,
@@ -142,7 +154,7 @@ while ($row = mysqli_fetch_assoc($q)) {
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 40px;
+            margin-bottom: 15px;
         }
 
         table th,
@@ -157,15 +169,34 @@ while ($row = mysqli_fetch_assoc($q)) {
             color: #fff;
         }
 
-        .summary {
-            margin-top: 20px;
+        /* Pagination */
+        .pagination {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        .summary h3 {
-            margin-bottom: 20px;
+        .pagination a {
+            display: inline-block;
+            padding: 6px 12px;
+            margin: 0 3px;
+            background: #ecf0f1;
             color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
         }
 
+        .pagination a.active {
+            background: #3498db;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .pagination a:hover {
+            background: #2980b9;
+            color: #fff;
+        }
+
+        /* Summary */
         .kelas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -177,23 +208,6 @@ while ($row = mysqli_fetch_assoc($q)) {
             border-radius: 8px;
             padding: 15px 20px;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-            transition: 0.3s;
-        }
-
-        .kelas-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-        }
-
-        .kelas-card h4 {
-            margin-bottom: 8px;
-            color: #3498db;
-        }
-
-        .kelas-card p {
-            font-size: 14px;
-            margin-bottom: 10px;
-            color: #555;
         }
 
         .progress {
@@ -210,25 +224,6 @@ while ($row = mysqli_fetch_assoc($q)) {
             border-radius: 5px;
             width: 0;
             transition: width 0.8s ease-in-out;
-        }
-
-        .kandidat-list {
-            margin-top: 10px;
-        }
-
-        .kandidat-item {
-            margin-bottom: 10px;
-            font-size: 13px;
-            color: #333;
-        }
-
-        .kandidat-item span {
-            display: block;
-        }
-
-        .sub-progress {
-            height: 6px;
-            background: #ecf0f1;
         }
 
         .sub-fill {
@@ -256,7 +251,7 @@ while ($row = mysqli_fetch_assoc($q)) {
 
     <!-- Main Content -->
     <div class="main-content">
-        <h1>👥 Daftar Voter</h1>
+        <h1>Daftar Voter</h1>
 
         <!-- Tabel Voter -->
         <table>
@@ -269,7 +264,7 @@ while ($row = mysqli_fetch_assoc($q)) {
             <?php if (count($voters) > 0): ?>
                 <?php foreach ($voters as $i => $v): ?>
                     <tr>
-                        <td><?= $i + 1 ?></td>
+                        <td><?= $offset + $i + 1 ?></td>
                         <td><?= htmlspecialchars($v['nama_voter']) ?></td>
                         <td><?= htmlspecialchars($v['kelas']) ?></td>
                         <td>Kandidat <?= htmlspecialchars($v['nomor_kandidat']) ?></td>
@@ -282,46 +277,53 @@ while ($row = mysqli_fetch_assoc($q)) {
             <?php endif; ?>
         </table>
 
-        <!-- Ringkasan Voting per Kelas -->
-        <div class="summary">
-            <h3>📊 Ringkasan Voting per Kelas</h3>
-            <div class="kelas-grid">
-                <?php foreach ($dataKelas as $kelas => $target): ?>
-                    <?php 
-                        $voted = $kelasSummary[$kelas]['voted'];
-                        $percent = $target > 0 ? round(($voted / $target) * 100, 2) : 0;
-                    ?>
-                    <div class="kelas-card">
-                        <h4><?= $kelas ?></h4>
-                        <p><?= $voted ?> dari <?= $target ?> siswa (<?= $percent ?>%)</p>
-                        <div class="progress">
-                            <div class="progress-fill" style="width: <?= $percent ?>%;"></div>
-                        </div>
-
-                        <div class="kandidat-list">
-                            <?php if (isset($hasilKandidat[$kelas])): ?>
-                                <?php foreach ($hasilKandidat[$kelas]["kandidat"] as $nomor => $jumlah): ?>
-                                    <?php
-                                    $persen = $hasilKandidat[$kelas]["total"] > 0
-                                        ? round(($jumlah / $hasilKandidat[$kelas]["total"]) * 100, 2)
-                                        : 0;
-                                    ?>
-                                    <div class="kandidat-item">
-                                        <span>Kandidat <?= $nomor ?></span>
-                                        <span><?= $jumlah ?> suara (<?= $persen ?>%)</span>
-                                        <div class="progress sub-progress">
-                                            <div class="sub-fill" style="width: <?= $persen ?>%;"></div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <i>Belum ada suara di kelas ini.</i>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+        <!-- Pagination -->
+        <?php if ($totalPages > 1): ?>
+            <div class="pagination">
+                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
+                    <a href="?page=<?= $p ?>" class="<?= $p == $page ? 'active' : '' ?>"><?= $p ?></a>
+                <?php endfor; ?>
             </div>
+        <?php endif; ?>
+
+        <!-- Ringkasan Voting per Kelas -->
+        <h3>Ringkasan Voting per Kelas</h3>
+        <div class="kelas-grid">
+            <?php foreach ($dataKelas as $kelas => $target): ?>
+                <?php
+                $voted = $kelasSummary[$kelas]['voted'];
+                $percent = $target > 0 ? round(($voted / $target) * 100, 2) : 0;
+                ?>
+                <div class="kelas-card">
+                    <h4><?= $kelas ?></h4>
+                    <p><?= $voted ?> dari <?= $target ?> siswa (<?= $percent ?>%)</p>
+                    <div class="progress">
+                        <div class="progress-fill" style="width: <?= $percent ?>%;"></div>
+                    </div>
+
+                    <div class="kandidat-list">
+                        <?php if (isset($hasilKandidat[$kelas])): ?>
+                            <?php foreach ($hasilKandidat[$kelas]["kandidat"] as $nomor => $jumlah): ?>
+                                <?php
+                                $persen = $hasilKandidat[$kelas]["total"] > 0
+                                    ? round(($jumlah / $hasilKandidat[$kelas]["total"]) * 100, 2)
+                                    : 0;
+                                ?>
+                                <div class="kandidat-item">
+                                    <span>Kandidat <?= $nomor ?> - <?= $jumlah ?> suara (<?= $persen ?>%)</span>
+                                    <div class="progress sub-progress">
+                                        <div class="sub-fill" style="width: <?= $persen ?>%;"></div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <i>Belum ada suara di kelas ini.</i>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </body>
+
 </html>
