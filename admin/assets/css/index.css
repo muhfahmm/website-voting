@@ -74,7 +74,7 @@
         /* Diagram batang */
         .bar-chart {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -105,4 +105,51 @@
 
         .bar-fill.green {
             background: #2ecc71;
+        }
+
+                .bar-chart {
+            margin-top: 20px;
+            margin-bottom: 100px;
+        }
+
+        .bar {
+            margin: 15px 0;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            padding: 5px;
+            width: 100%;
+        }
+
+        .bar-fill {
+            height: 50px;
+            border-radius: 4px;
+            background: #3498db;
+            position: relative;
+            overflow: hidden;
+            transition: width 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bar-percent {
+            font-size: 13px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .bar-name {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .chart-container {
+            width: 45%;
+            margin: 20px;
+            display: inline-block;
+            vertical-align: top;
         }

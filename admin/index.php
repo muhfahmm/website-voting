@@ -32,47 +32,7 @@ $totalVotes = $totalRow['total'];
     <title>Dashboard Admin - Voting OSIS</title>
     <link rel="stylesheet" href="./assets/css/index.css">
     <link rel="stylesheet" href="./assets/css/global.css">
-    <style>
-        .bar-chart {
-            margin-top: 20px;
-        }
 
-        .bar {
-            margin: 10px 0;
-            background: #eee;
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .bar-label {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .bar-fill {
-            height: 30px;
-            line-height: 30px;
-            color: #fff;
-            text-align: right;
-            padding-right: 10px;
-            background: #3498db;
-            transition: width 0.5s ease;
-        }
-
-        .bar-fill.red {
-            background: #e74c3c;
-        }
-
-        .bar-fill.green {
-            background: #2ecc71;
-        }
-    </style>
 </head>
 
 <body>
