@@ -42,19 +42,20 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
     <div class="kandidat-container">
         <?php
         if (mysqli_num_rows($query) > 0) {
-        while ($row = mysqli_fetch_assoc($query)) : ?>
-            <div class="kandidat-card">
-                <div class="foto-wrapper">
-                    <img src="../uploads/<?= $row['foto_ketua'] ?>">
-                    <img src="../uploads/<?= $row['foto_wakil'] ?>">
+            while ($row = mysqli_fetch_assoc($query)) : ?>
+                <div class="kandidat-card">
+                    <div class="foto-wrapper">
+                        <img src="../uploads/<?= $row['foto_ketua'] ?>">
+                        <img src="../uploads/<?= $row['foto_wakil'] ?>">
+                    </div>
+                    <h3><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></h3>
+                    <a href="hapus.php?id=<?= $row['id']; ?>">Hapus</a> |
+                    <a href="edit.php?id=<?= $row['id']; ?>">Edit</a>
                 </div>
-                <h3><?= $row['nama_ketua']; ?> - <?= $row['nama_wakil']; ?></h3>
-                <a href="hapus.php?id=<?php echo $row['id']; ?>">Hapus</a>
-            </div>
-        <?php endwhile; 
+            <?php endwhile;
         } else { ?>
-        <?php echo "kandidat masih kosong";
-        ?>
+            <?php echo "kandidat masih kosong";
+            ?>
         <?php
 
         }

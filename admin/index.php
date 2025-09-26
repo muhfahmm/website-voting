@@ -29,10 +29,10 @@ $totalVotes = $totalRow['total'];
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - Voting OSIS</title>
     <link rel="stylesheet" href="./assets/css/index.css">
     <link rel="stylesheet" href="./assets/css/global.css">
-
 </head>
 
 <body>
