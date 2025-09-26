@@ -162,6 +162,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
             <li><a href="../hasil-vote/result.php">📋 Hasil</a></li>
             <li><a href="../kandidat/tambah.php">➕ Tambah Kandidat</a></li>
             <li><a href="../kandidat/daftar.php" class="active">📋 Daftar Kandidat</a></li>
+            <li><a href="../kandidat/voter.php">📋 voter</a></li>
             <li><a href="../auth/logout.php">🚪 Logout</a></li>
         </ul>
     </div>

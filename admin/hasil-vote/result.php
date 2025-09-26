@@ -140,6 +140,7 @@ $totalVotes = $totalRow['total'];
             <li><a href="result.php">📋 Hasil</a></li>
             <li><a href="../kandidat/tambah.php">➕ Tambah Kandidat</a></li>
             <li><a href="../kandidat/daftar.php">📋 Daftar Kandidat</a></li>
+            <li><a href="../kandidat/voter.php">📋 voter</a></li>
             <li><a href="../auth/logout.php">🚪 Logout</a></li>
         </ul>
     </div>
