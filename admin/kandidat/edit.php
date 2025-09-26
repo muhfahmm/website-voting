@@ -22,28 +22,55 @@ if (!$data) {
 <head>
     <meta charset="UTF-8">
     <title>Edit Kandidat</title>
-    <link rel="stylesheet" href="../assets/css/form.css">
 </head>
 <body>
-    <h2>Edit Kandidat</h2>
-    <form action="../api/proses-edit.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="<?= $data['id']; ?>">
+    <div class="card">
+        <h2>Edit Kandidat</h2>
+        <form action="../api/proses-edit.php" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="<?= $data['id']; ?>">
 
-        <label>Nama Ketua</label><br>
-        <input type="text" name="nama_ketua" value="<?= $data['nama_ketua']; ?>" required><br><br>
+            <label for="nama_ketua">Nama Ketua</label>
+            <input type="text" id="nama_ketua" name="nama_ketua" value="<?= $data['nama_ketua']; ?>" required>
 
-        <label>Nama Wakil</label><br>
-        <input type="text" name="nama_wakil" value="<?= $data['nama_wakil']; ?>" required><br><br>
+            <label for="nama_wakil">Nama Wakil</label>
+            <input type="text" id="nama_wakil" name="nama_wakil" value="<?= $data['nama_wakil']; ?>" required>
 
-        <label>Foto Ketua</label><br>
-        <img src="../uploads/<?= $data['foto_ketua']; ?>" width="100"><br>
-        <input type="file" name="foto_ketua"><br><br>
+            <label>Foto Ketua</label>
+            <div class="preview">
+                <img id="preview_ketua" src="../uploads/<?= $data['foto_ketua']; ?>" alt="Foto Ketua">
+            </div>
+            <div class="file-input">
+                <label class="file-input-label">Pilih Foto Ketua</label>
+                <input type="file" name="foto_ketua" accept="image/*" onchange="previewImage(this, 'preview_ketua')">
+            </div>
 
-        <label>Foto Wakil</label><br>
-        <img src="../uploads/<?= $data['foto_wakil']; ?>" width="100"><br>
-        <input type="file" name="foto_wakil"><br><br>
+            <label>Foto Wakil</label>
+            <div class="preview">
+                <img id="preview_wakil" src="../uploads/<?= $data['foto_wakil']; ?>" alt="Foto Wakil">
+            </div>
+            <div class="file-input">
+                <label class="file-input-label">Pilih Foto Wakil</label>
+                <input type="file" name="foto_wakil" accept="image/*" onchange="previewImage(this, 'preview_wakil')">
+            </div>
 
-        <button type="submit" name="edit">Simpan Perubahan</button>
-    </form>
+            <button type="submit" name="edit" class="btn btn-primary">💾 Simpan Perubahan</button>
+            <a href="daftar.php" class="back-btn">⬅ Kembali</a>
+        </form>
+    </div>
+
+    <script>
+        function previewImage(input, previewId) {
+            const file = input.files[0];
+            const preview = document.getElementById(previewId);
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </body>
 </html>
