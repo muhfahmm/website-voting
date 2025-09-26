@@ -145,8 +145,7 @@ $totalVotes = $totalRow['total'];
     </div>
 
     <div class="main-content">
-        <!-- Diagram Bar Horizontal (yang lama) -->
-        <h2>📊 Diagram Batang Horizontal</h2>
+        <h2 style="margin-bottom: 20px; text-align:center;">Hasil Sementara</h2>
         <div class="bar-chart">
             <?php
             while ($row = mysqli_fetch_assoc($query)) {
@@ -161,8 +160,6 @@ $totalVotes = $totalRow['total'];
             <?php } ?>
         </div>
 
-        <!-- Tambahan Chart.js -->
-        <h2>📈 Diagram Lainnya</h2>
         <div class="chart-container">
             <canvas id="pieChart"></canvas>
         </div>

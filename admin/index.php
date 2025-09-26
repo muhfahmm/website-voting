@@ -94,7 +94,7 @@ $totalVotes = $totalRow['total'];
 
         <!-- Hasil Voting -->
         <section class="card">
-            <h2>📊 Hasil Voting Sementara</h2>
+            <h2>Daftar Calon</h2>
             <table border="1" cellspacing="0" cellpadding="8">
                 <thead>
                     <tr>
