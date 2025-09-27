@@ -66,8 +66,113 @@
             mysqli_stmt_close($stmt_update_result);
 
             mysqli_commit($db);
+            // setelah proses vote berhasil
+            echo "
+                <div id='modalSuccess' class='modal' style='display:flex;'>
+                    <div class='modal-content'>
+                        <span class='close'>&times;</span>
+                        <div class='icon'>✅</div>
+                        <h2>Vote Berhasil!</h2>
+                        <p>Terima kasih sudah memilih. Suaramu sudah tersimpan.</p>
+                        <button id='okBtn'>OK</button>
+                    </div>
+                </div>
 
-            echo "<script>alert('✅ Vote berhasil disimpan. Terima kasih sudah memilih!'); window.location.href='index.php';</script>";
+                <style>
+                /* Modal styling */
+                .modal {
+                    display: none;
+                    position: fixed;
+                    z-index: 999;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    justify-content: center;
+                    align-items: center;
+                }
+                .modal-content {
+                    background: #fff;
+                    padding: 25px 30px;
+                    border-radius: 10px;
+                    width: 90%;
+                    max-width: 420px;
+                    text-align: center;
+                    animation: fadeIn 0.3s ease-in-out;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                    position: relative;
+                }
+                .modal-content .close {
+                    position: absolute;
+                    top: 12px;
+                    right: 15px;
+                    font-size: 22px;
+                    font-weight: bold;
+                    color: #666;
+                    cursor: pointer;
+                }
+                .modal-content .icon {
+                    font-size: 48px;
+                    color: #2ecc71;
+                    margin-bottom: 15px;
+                }
+                .modal-content h2 {
+                    margin: 0 0 10px 0;
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #27ae60;
+                }
+                .modal-content p {
+                    font-size: 15px;
+                    margin-bottom: 20px;
+                    color: #444;
+                }
+                .modal-content button {
+                    background: #3498db;
+                    border: none;
+                    color: #fff;
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 15px;
+                    transition: 0.2s ease;
+                }
+                .modal-content button:hover {
+                    background: #2980b9;
+                }
+                @keyframes fadeIn {
+                    from {opacity:0; transform: scale(0.9);}
+                    to {opacity:1; transform: scale(1);}
+                }
+                </style>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const modal = document.getElementById('modalSuccess');
+                    const closeBtn = modal.querySelector('.close');
+                    const okBtn = document.getElementById('okBtn');
+
+                    modal.style.display = 'flex';
+
+                    // Tutup modal
+                    closeBtn.onclick = () => {
+                        modal.style.display = 'none';
+                        window.location.href='index.php';
+                    };
+                    okBtn.onclick = () => {
+                        modal.style.display = 'none';
+                        window.location.href='index.php';
+                    };
+                    window.onclick = (e) => {
+                        if (e.target === modal) {
+                            modal.style.display = 'none';
+                            window.location.href='index.php';
+                        }
+                    };
+                });
+                </script>
+                ";
         } catch (mysqli_sql_exception $e) {
             mysqli_rollback($db);
 
