@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voting Kandidat OSIS</title>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/modal.css">
     <link rel="stylesheet" href="assets/css/slider.css">
@@ -233,8 +235,8 @@
                 </div>
 
                 <!-- Tombol Navigasi -->
-                <button class="slider-btn prev">❮</button>
-                <button class="slider-btn next">❯</button>
+                <button class="slider-btn prev"><i class="bi bi-chevron-left"></i></button>
+                <button class="slider-btn next"><i class="bi bi-chevron-right"></i></button>
 
                 <script>
                     const sliderWrapper = document.querySelector('.slider-wrapper');
