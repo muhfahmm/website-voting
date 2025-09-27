@@ -105,7 +105,7 @@
                                     </div>
                                     <div class="data-user">
                                         <h3><?= $row['nama_ketua']; ?></h3>
-                                        <p>Kelas: X-1</p>
+                                        <p><?= $row['kelas_ketua']; ?></p>
                                         <p><strong>Calon Ketua OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                                     </div>
                                     <div class="data-user">
                                         <h3><?= $row['nama_wakil']; ?></h3>
-                                        <p>Kelas: X-2</p>
+                                        <p><?= $row['kelas_wakil']; ?></p>
                                         <p><strong>Calon Wakil OSIS Nomor <?= $row['nomor_kandidat']; ?></strong></p>
                                     </div>
                                 </div>
