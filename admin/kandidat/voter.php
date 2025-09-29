@@ -397,6 +397,58 @@ while ($row = mysqli_fetch_assoc($q)) {
                 <?php endfor; ?>
             </div>
         <?php endif; ?>
+        <?php
+// --- Hitung ringkasan voting guru ---
+$guruSummary = [
+    "total" => 0,
+    "kandidat" => []
+];
+
+$qGuru = mysqli_query($db, "
+    SELECT l.nomor_kandidat, COUNT(*) as total_suara
+    FROM tb_vote_log l
+    JOIN tb_voter v ON l.voter_id = v.id
+    WHERE v.role = 'guru'
+    GROUP BY l.nomor_kandidat
+");
+
+while ($row = mysqli_fetch_assoc($qGuru)) {
+    $nomor = $row['nomor_kandidat'];
+    $jumlah = $row['total_suara'];
+
+    $guruSummary["kandidat"][$nomor] = $jumlah;
+    $guruSummary["total"] += $jumlah;
+}
+?>
+<!-- Ringkasan Voting Guru -->
+<h3>Ringkasan Voting Guru</h3>
+<div class="kelas-grid">
+    <div class="kelas-card">
+        <h4>Guru</h4>
+        <p>Total Suara: <?= $guruSummary["total"] ?> orang</p>
+
+        <div class="kandidat-list">
+            <?php if (!empty($guruSummary["kandidat"])): ?>
+                <?php foreach ($guruSummary["kandidat"] as $nomor => $jumlah): ?>
+                    <?php
+                    $persen = $guruSummary["total"] > 0
+                        ? round(($jumlah / $guruSummary["total"]) * 100, 2)
+                        : 0;
+                    ?>
+                    <div class="kandidat-item">
+                        <span>Kandidat <?= $nomor ?> - <?= $jumlah ?> suara (<?= $persen ?>%)</span>
+                        <div class="progress sub-progress">
+                            <div class="sub-fill" style="width: <?= $persen ?>%;"></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <i>Belum ada suara dari guru.</i>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
     </div>
 </body>
 
