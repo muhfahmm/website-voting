@@ -12,30 +12,67 @@ $admin = $_SESSION['username'];
 
 // --- Pagination setup ---
 $limit = 10; // jumlah data per halaman
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$offset = ($page - 1) * $limit;
 
-// Hitung total data
-$totalQuery = mysqli_query($db, "SELECT COUNT(*) as total FROM tb_voter v JOIN tb_vote_log l ON v.id = l.voter_id");
-$totalRow = mysqli_fetch_assoc($totalQuery);
-$totalData = $totalRow['total'];
-$totalPages = ceil($totalData / $limit);
+// halaman untuk siswa & guru (pisah)
+$pageSiswa = isset($_GET['page_siswa']) ? (int)$_GET['page_siswa'] : 1;
+if ($pageSiswa < 1) $pageSiswa = 1;
+$offsetSiswa = ($pageSiswa - 1) * $limit;
 
-// Ambil data voter dengan pagination
-$votedQuery = mysqli_query($db, "
-    SELECT v.id, v.nama_voter, v.kelas, l.nomor_kandidat
+$pageGuru = isset($_GET['page_guru']) ? (int)$_GET['page_guru'] : 1;
+if ($pageGuru < 1) $pageGuru = 1;
+$offsetGuru = ($pageGuru - 1) * $limit;
+
+// --- Siapkan variabel hasil ---
+$votersSiswa = [];
+$votersGuru = [];
+
+// --- Hitung & ambil data VOTER SISWA ---
+$totalSiswaQuery = mysqli_query($db, "
+    SELECT COUNT(*) as total
     FROM tb_voter v
     JOIN tb_vote_log l ON v.id = l.voter_id
-    ORDER BY v.kelas, v.nama_voter
-    LIMIT $limit OFFSET $offset
+    WHERE v.role = 'siswa'
 ");
+$totalSiswaRow = mysqli_fetch_assoc($totalSiswaQuery);
+$totalSiswa = isset($totalSiswaRow['total']) ? (int)$totalSiswaRow['total'] : 0;
+$totalPagesSiswa = $totalSiswa > 0 ? ceil($totalSiswa / $limit) : 1;
 
-$voters = [];
-while ($row = mysqli_fetch_assoc($votedQuery)) {
-    $voters[] = $row;
+$votedSiswaQuery = mysqli_query($db, "
+    SELECT v.id, v.nama_voter, v.kelas, v.role, l.nomor_kandidat
+    FROM tb_voter v
+    JOIN tb_vote_log l ON v.id = l.voter_id
+    WHERE v.role = 'siswa'
+    ORDER BY v.kelas, v.nama_voter
+    LIMIT $limit OFFSET $offsetSiswa
+");
+while ($row = mysqli_fetch_assoc($votedSiswaQuery)) {
+    $votersSiswa[] = $row;
 }
 
-// jumlah siswa setiap kelas
+// --- Hitung & ambil data VOTER GURU ---
+$totalGuruQuery = mysqli_query($db, "
+    SELECT COUNT(*) as total
+    FROM tb_voter v
+    JOIN tb_vote_log l ON v.id = l.voter_id
+    WHERE v.role = 'guru'
+");
+$totalGuruRow = mysqli_fetch_assoc($totalGuruQuery);
+$totalGuru = isset($totalGuruRow['total']) ? (int)$totalGuruRow['total'] : 0;
+$totalPagesGuru = $totalGuru > 0 ? ceil($totalGuru / $limit) : 1;
+
+$votedGuruQuery = mysqli_query($db, "
+    SELECT v.id, v.nama_voter, v.kelas, v.role, l.nomor_kandidat
+    FROM tb_voter v
+    JOIN tb_vote_log l ON v.id = l.voter_id
+    WHERE v.role = 'guru'
+    ORDER BY v.nama_voter
+    LIMIT $limit OFFSET $offsetGuru
+");
+while ($row = mysqli_fetch_assoc($votedGuruQuery)) {
+    $votersGuru[] = $row;
+}
+
+// jumlah siswa setiap kelas (target)
 $dataKelas = [
     "X-1"   => 10,
     "X-2"   => 20,
@@ -44,14 +81,15 @@ $dataKelas = [
     "XII"   => 35
 ];
 
-// --- Hitung berapa yang sudah vote per kelas ---
+// --- Hitung berapa yang sudah vote per kelas (hanya siswa) ---
 $kelasSummary = [];
 foreach ($dataKelas as $kelas => $target) {
     $q = mysqli_query($db, "
         SELECT COUNT(*) as jumlah 
         FROM tb_voter v 
         JOIN tb_vote_log l ON v.id=l.voter_id 
-        WHERE v.kelas='$kelas'
+        WHERE v.kelas='" . mysqli_real_escape_string($db, $kelas) . "'
+          AND v.role='siswa'
     ");
     $row = mysqli_fetch_assoc($q);
     $kelasSummary[$kelas] = [
@@ -60,12 +98,13 @@ foreach ($dataKelas as $kelas => $target) {
     ];
 }
 
-// --- Hitung distribusi kandidat per kelas ---
+// --- Hitung distribusi kandidat per kelas (hanya siswa) ---
 $hasilKandidat = [];
 $q = mysqli_query($db, "
     SELECT v.kelas, l.nomor_kandidat, COUNT(*) as total_suara
     FROM tb_vote_log l
     JOIN tb_voter v ON l.voter_id = v.id
+    WHERE v.role = 'siswa'
     GROUP BY v.kelas, l.nomor_kandidat
 ");
 
@@ -92,146 +131,29 @@ while ($row = mysqli_fetch_assoc($q)) {
     <meta charset="UTF-8">
     <title>Daftar Voter - Voting OSIS</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            display: flex;
-            min-height: 100vh;
-            background: #f4f6f9;
-            font-family: Arial, sans-serif;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 220px;
-            background: #2c3e50;
-            color: #fff;
-            padding: 20px;
-        }
-
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .sidebar ul {
-            list-style: none;
-        }
-
-        .sidebar ul li {
-            margin: 15px 0;
-        }
-
-        .sidebar ul li a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            padding: 8px 10px;
-            border-radius: 5px;
-        }
-
-        .sidebar ul li a:hover,
-        .sidebar ul li a.active {
-            background: #34495e;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 30px;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            color: #2c3e50;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-        }
-
-        table th,
-        table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        table th {
-            background: #2c3e50;
-            color: #fff;
-        }
-
-        /* Pagination */
-        .pagination {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .pagination a {
-            display: inline-block;
-            padding: 6px 12px;
-            margin: 0 3px;
-            background: #ecf0f1;
-            color: #2c3e50;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-        .pagination a.active {
-            background: #3498db;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .pagination a:hover {
-            background: #2980b9;
-            color: #fff;
-        }
-
-        /* Summary */
-        .kelas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .kelas-card {
-            background: #fff;
-            border-radius: 8px;
-            padding: 15px 20px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .progress {
-            height: 8px;
-            background: #ecf0f1;
-            border-radius: 5px;
-            overflow: hidden;
-            margin: 6px 0 12px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #3498db;
-            border-radius: 5px;
-            width: 0;
-            transition: width 0.8s ease-in-out;
-        }
-
-        .sub-fill {
-            background: #2ecc71;
-            height: 100%;
-            border-radius: 5px;
-            transition: width 0.8s ease-in-out;
-        }
+        /* (sama persis seperti style yang kamu punya) */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { display: flex; min-height: 100vh; background: #f4f6f9; font-family: Arial, sans-serif; }
+        .sidebar { width: 220px; background: #2c3e50; color: #fff; padding: 20px; }
+        .sidebar h2 { text-align: center; margin-bottom: 20px; }
+        .sidebar ul { list-style: none; }
+        .sidebar ul li { margin: 15px 0; }
+        .sidebar ul li a { color: #fff; text-decoration: none; display: block; padding: 8px 10px; border-radius: 5px; }
+        .sidebar ul li a:hover, .sidebar ul li a.active { background: #34495e; }
+        .main-content { flex: 1; padding: 30px; }
+        h1 { margin-bottom: 20px; color: #2c3e50; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        table th, table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        table th { background: #2c3e50; color: #fff; }
+        .pagination { text-align: center; margin-bottom: 30px; }
+        .pagination a { display: inline-block; padding: 6px 12px; margin: 0 3px; background: #ecf0f1; color: #2c3e50; text-decoration: none; border-radius: 4px; }
+        .pagination a.active { background: #3498db; color: #fff; font-weight: bold; }
+        .pagination a:hover { background: #2980b9; color: #fff; }
+        .kelas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .kelas-card { background: #fff; border-radius: 8px; padding: 15px 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.08); }
+        .progress { height: 8px; background: #ecf0f1; border-radius: 5px; overflow: hidden; margin: 6px 0 12px; }
+        .progress-fill { height: 100%; background: #3498db; border-radius: 5px; width: 0; transition: width 0.8s ease-in-out; }
+        .sub-fill { background: #2ecc71; height: 100%; border-radius: 5px; transition: width 0.8s ease-in-out; }
     </style>
 </head>
 
@@ -251,42 +173,45 @@ while ($row = mysqli_fetch_assoc($q)) {
 
     <!-- Main Content -->
     <div class="main-content">
-        <h1>Daftar Voter</h1>
+        <!-- SISWA -->
+        <h1>Daftar Voter Khusus Siswa</h1>
 
-        <!-- Tabel Voter -->
+        <!-- Tabel Voter SISWA -->
         <table>
             <tr>
                 <th>No</th>
                 <th>Nama</th>
                 <th>Kelas</th>
                 <th>Pilihan Kandidat</th>
+                <th>Role</th>
             </tr>
-            <?php if (count($voters) > 0): ?>
-                <?php foreach ($voters as $i => $v): ?>
+            <?php if (count($votersSiswa) > 0): ?>
+                <?php foreach ($votersSiswa as $i => $v): ?>
                     <tr>
-                        <td><?= $offset + $i + 1 ?></td>
+                        <td><?= $offsetSiswa + $i + 1 ?></td>
                         <td><?= htmlspecialchars($v['nama_voter']) ?></td>
                         <td><?= htmlspecialchars($v['kelas']) ?></td>
                         <td>Kandidat <?= htmlspecialchars($v['nomor_kandidat']) ?></td>
+                        <td><?= ucfirst(htmlspecialchars($v['role'])) ?></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="4" style="text-align:center;">Belum ada siswa yang memilih.</td>
+                    <td colspan="5" style="text-align:center;">Belum ada siswa yang memilih.</td>
                 </tr>
             <?php endif; ?>
         </table>
 
-        <!-- Pagination -->
-        <?php if ($totalPages > 1): ?>
+        <!-- Pagination SISWA -->
+        <?php if ($totalPagesSiswa > 1): ?>
             <div class="pagination">
-                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-                    <a href="?page=<?= $p ?>" class="<?= $p == $page ? 'active' : '' ?>"><?= $p ?></a>
+                <?php for ($p = 1; $p <= $totalPagesSiswa; $p++): ?>
+                    <a href="?page_siswa=<?= $p ?>&page_guru=<?= $pageGuru ?>" class="<?= $p == $pageSiswa ? 'active' : '' ?>"><?= $p ?></a>
                 <?php endfor; ?>
             </div>
         <?php endif; ?>
 
-        <!-- Ringkasan Voting per Kelas -->
+        <!-- Ringkasan Voting per Kelas (SISWA) -->
         <h3>Ringkasan Voting per Kelas</h3>
         <div class="kelas-grid">
             <?php foreach ($dataKelas as $kelas => $target): ?>
@@ -323,6 +248,40 @@ while ($row = mysqli_fetch_assoc($q)) {
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <!-- GURU -->
+        <h1>Daftar Voter Khusus Guru</h1>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Pilihan Kandidat</th>
+                <th>Role</th>
+            </tr>
+            <?php if (count($votersGuru) > 0): ?>
+                <?php foreach ($votersGuru as $i => $v): ?>
+                    <tr>
+                        <td><?= $offsetGuru + $i + 1 ?></td>
+                        <td><?= htmlspecialchars($v['nama_voter']) ?></td>
+                        <td>Kandidat <?= htmlspecialchars($v['nomor_kandidat']) ?></td>
+                        <td><?= ucfirst(htmlspecialchars($v['role'])) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="4" style="text-align:center;">Belum ada guru yang memilih.</td>
+                </tr>
+            <?php endif; ?>
+        </table>
+
+        <!-- Pagination GURU -->
+        <?php if ($totalPagesGuru > 1): ?>
+            <div class="pagination">
+                <?php for ($p = 1; $p <= $totalPagesGuru; $p++): ?>
+                    <a href="?page_guru=<?= $p ?>&page_siswa=<?= $pageSiswa ?>" class="<?= $p == $pageGuru ? 'active' : '' ?>"><?= $p ?></a>
+                <?php endfor; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </body>
 
