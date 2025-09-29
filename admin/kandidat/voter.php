@@ -11,7 +11,7 @@ if (!isset($_SESSION['login'])) {
 $admin = $_SESSION['username'];
 
 // --- Pagination setup ---
-$limit = 10; // jumlah data per halaman
+$limit = 5; // jumlah data per halaman
 
 // halaman untuk siswa & guru (pisah)
 $pageSiswa = isset($_GET['page_siswa']) ? (int)$_GET['page_siswa'] : 1;
