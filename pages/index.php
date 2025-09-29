@@ -273,7 +273,7 @@
             <div class="form-user">
                 <div style="margin-bottom: 20px;">
                     <h3>Form Pemilih</h3>
-                    <p style="color: red; font-family:'Lucida Sans';">Wajib diisi Siswa!</p>
+                    <p style="color: red; font-family:'Lucida Sans';">Wajib diisi!</p>
                 </div>
                 <form action="" method="post">
                     <label for="pemilih">Nama Pemilih</label>
