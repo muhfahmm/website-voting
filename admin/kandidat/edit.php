@@ -19,6 +19,7 @@ if (!$data) {
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Edit Kandidat</title>
@@ -83,7 +84,7 @@ if (!$data) {
             max-width: 500px;
             margin: auto;
             border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
@@ -148,6 +149,7 @@ if (!$data) {
         }
     </style>
 </head>
+
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
@@ -208,4 +210,5 @@ if (!$data) {
         }
     </script>
 </body>
+
 </html>
