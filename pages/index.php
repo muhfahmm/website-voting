@@ -321,7 +321,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             <div class="title">
                 <h1>Form Voting Ketua & Wakil OSIS Skalsa</h1>
             </div>
-
             <div class="kandidat-slider">
                 <div class="slider-wrapper">
                     <?php while ($row = mysqli_fetch_assoc($query)) : ?>
@@ -349,8 +348,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                         </div>
                     <?php endwhile; ?>
                 </div>
-
-                <!-- nav -->
                 <button class="slider-btn prev" aria-label="prev" style="position:absolute;left:8px;top:40%;"><i class="bi bi-chevron-left"></i></button>
                 <button class="slider-btn next" aria-label="next" style="position:absolute;right:8px;top:40%;"><i class="bi bi-chevron-right"></i></button>
             </div>
@@ -360,7 +357,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                     <h3>Form Pemilih</h3>
                     <p class="small-note" style="color:red;font-family:'Lucida Sans';">Wajib diisi!</p>
                 </div>
-
                 <form action="" method="post" id="formVote" novalidate>
                     <label for="pemilih">Nama Pemilih</label>
                     <input type="text" id="pemilih" name="pemilih" autocomplete="off" placeholder="Nama lengkap">
@@ -383,9 +379,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                             <option value="XII">XII</option>
                         </select>
                     </div>
-
                     <input type="hidden" name="kandidat_terpilih" id="kandidat_terpilih">
-
                     <button type="submit" name="kirim">Kirim Vote</button>
                 </form>
             </div>
