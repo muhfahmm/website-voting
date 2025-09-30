@@ -538,10 +538,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             });
         });
     </script>
-
-    <!-- Note: saya sengaja tidak memanggil 'assets/js/modal.js' di sini untuk menghindari konflik modal.
-         Jika kamu perlu memanggil file eksternal itu, pastikan tidak otomatis membuka modal yang
-         mengganggu validasi form. -->
 </body>
 
 </html>
