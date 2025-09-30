@@ -2,7 +2,6 @@
 session_start();
 require '../../db/db.php';
 
-// cek login
 if (!isset($_SESSION['login'])) {
     header("Location: ../auth/login.php");
     exit;
@@ -154,7 +153,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
 </head>
 
 <body>
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>Admin Panel</h2>
         <ul>
@@ -167,7 +165,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat");
         </ul>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <h1>Daftar Kandidat</h1>
         <div class="kandidat-container">
