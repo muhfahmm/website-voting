@@ -386,7 +386,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
 
                     <input type="hidden" name="kandidat_terpilih" id="kandidat_terpilih">
 
-                    <button type="submit" name="kirim">✅ Kirim Vote</button>
+                    <button type="submit" name="kirim">Kirim Vote</button>
                 </form>
             </div>
         </div>
