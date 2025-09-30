@@ -131,7 +131,7 @@ if (!isset($_SESSION['login'])) {
             <li><a href="../hasil-vote/result.php">📋 Hasil</a></li>
             <li><a href="../kandidat/tambah.php" class="active">➕ Tambah Kandidat</a></li>
             <li><a href="../kandidat/daftar.php">📋 Daftar Kandidat</a></li>
-            <li><a href="../kandidat/voter.php">📋 voter</a></li>
+            <li><a href="../kandidat/voter.php">👥 Daftar Voter</a></li>
             <li><a href="../auth/logout.php">🚪 Logout</a></li>
         </ul>
     </div>
