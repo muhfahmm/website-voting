@@ -2,13 +2,11 @@
 session_start();
 require '../../db/db.php';
 
-// cek login
 if (!isset($_SESSION['login'])) {
     header("Location: ../auth/login.php");
     exit;
 }
 
-// ambil data kandidat berdasarkan id
 $id = $_GET['id'];
 $query = mysqli_query($db, "SELECT * FROM tb_kandidat WHERE id='$id'");
 $data = mysqli_fetch_assoc($query);
@@ -151,7 +149,6 @@ if (!$data) {
 </head>
 
 <body>
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>Admin Panel</h2>
         <ul>
@@ -164,7 +161,6 @@ if (!$data) {
         </ul>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="card">
             <h2>Edit Kandidat</h2>
