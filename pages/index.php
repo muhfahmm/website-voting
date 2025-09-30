@@ -1,20 +1,14 @@
 <?php
-// file: index.php (halaman voting user)
-// pastikan path require db sesuai struktur proyekmu
 session_start();
-require '../db/db.php'; // sesuaikan path jika perlu
+require '../db/db.php';
 
-// POST handling (server-side validation + DB ops)
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
 
-    // ambil & sanitasi input
     $nama_pemilih      = isset($_POST['pemilih']) ? trim($_POST['pemilih']) : '';
     $role              = isset($_POST['role']) ? trim($_POST['role']) : 'siswa';
-    // jika input 'kelas' tidak dikirim (karena disabled saat guru), kita treat sebagai empty string
     $kelas_pemilih     = isset($_POST['kelas']) ? trim($_POST['kelas']) : '';
     $kandidat_terpilih = isset($_POST['kandidat_terpilih']) ? (int)$_POST['kandidat_terpilih'] : 0;
 
-    // basic server-side validation
     if ($nama_pemilih === '' || $kandidat_terpilih <= 0) {
         echo "<script>alert('⚠️ Nama dan pilihan kandidat wajib diisi!'); window.location.href='index.php';</script>";
         exit();
@@ -25,19 +19,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
         exit();
     }
 
-    // jika role siswa -> kelas wajib
     if ($role === 'siswa' && $kelas_pemilih === '') {
         echo "<script>alert('⚠️ Untuk role siswa, kolom kelas wajib diisi.'); window.location.href='index.php';</script>";
         exit();
     }
 
-    // untuk kompatibilitas DB, simpan kelas kosong jika guru (atau set NULL jika kamu ubah struktur)
     $kelas_db = ($role === 'siswa') ? $kelas_pemilih : '';
 
     mysqli_begin_transaction($db);
 
     try {
-        // Insert tb_voter
         $sql_voter = "INSERT INTO tb_voter (nama_voter, kelas, role, created_at) VALUES (?, ?, ?, NOW())";
         $stmt_voter = mysqli_prepare($db, $sql_voter);
         if (!$stmt_voter) throw new mysqli_sql_exception(mysqli_error($db));
@@ -46,7 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
         $voter_id = mysqli_insert_id($db);
         mysqli_stmt_close($stmt_voter);
 
-        // Insert tb_vote_log
         $sql_vote_log = "INSERT INTO tb_vote_log (voter_id, nomor_kandidat, created_at) VALUES (?, ?, NOW())";
         $stmt_vote_log = mysqli_prepare($db, $sql_vote_log);
         if (!$stmt_vote_log) throw new mysqli_sql_exception(mysqli_error($db));
@@ -54,8 +44,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
         mysqli_stmt_execute($stmt_vote_log);
         mysqli_stmt_close($stmt_vote_log);
 
-        // Update tb_vote_result (jika kamu pakai tabel hasil terpisah)
-        // Jika tidak ada tabel tb_vote_result jangan jalankan ini (atau sesuaikan)
         $sql_update_result = "UPDATE tb_vote_result SET jumlah_vote = jumlah_vote + 1 WHERE nomor_kandidat = ?";
         $stmt_update_result = mysqli_prepare($db, $sql_update_result);
         if ($stmt_update_result) {
@@ -66,7 +54,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
 
         mysqli_commit($db);
 
-        // tampilkan modal success inline (tetap di halaman)
         echo "
             <div id='modalSuccess' class='modal' style='display:flex;'>
                 <div class='modal-content'>
@@ -98,7 +85,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
         exit();
     } catch (mysqli_sql_exception $e) {
         mysqli_rollback($db);
-        // Beri pesan yang membantu; kalau production bisa disederhanakan
         $err = addslashes($e->getMessage());
         echo "<script>alert('⚠️ Terjadi kesalahan saat memproses vote: {$err}'); window.location.href='index.php';</script>";
         exit();
@@ -107,7 +93,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
     }
 }
 
-// ambil data kandidat
 $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat ASC");
 ?>
 <!DOCTYPE html>
@@ -117,7 +102,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Voting Kandidat OSIS</title>
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/modal.css">
@@ -386,7 +370,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
         </div>
     </div>
 
-    <!-- Modal Warning (client-side) -->
+    <!-- modal peringtan -->
     <div id="modalWarning" class="modal" aria-hidden="true">
         <div class="modal-content">
             <span class="close" id="closeModalWarning">&times;</span>
@@ -398,7 +382,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Elements
             const kandidatCards = Array.from(document.querySelectorAll(".kandidat-card"));
             const inputHidden = document.getElementById("kandidat_terpilih");
             const form = document.getElementById("formVote");
@@ -411,7 +394,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             const kelasSelect = document.getElementById('kelas');
             const nameInput = document.getElementById('pemilih');
 
-            // Slider basics
             const sliderWrapper = document.querySelector('.slider-wrapper');
             const prevBtn = document.querySelector('.slider-btn.prev');
             const nextBtn = document.querySelector('.slider-btn.next');
@@ -430,15 +412,12 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                 updateSlider();
             });
 
-            // kandidat selection handling
             let selectedCard = null;
             kandidatCards.forEach(card => {
                 const btn = card.querySelector('.btn-vote button');
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    // toggle selection
                     if (selectedCard === card) {
-                        // unselect
                         card.classList.remove('active');
                         inputHidden.value = '';
                         selectedCard = null;
@@ -448,8 +427,8 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                         });
                         return;
                     }
-                    if (selectedCard) return; // sudah ada pilihan
-                    // select this
+                    if (selectedCard) return;
+
                     card.classList.add('active');
                     inputHidden.value = card.dataset.id;
                     selectedCard = card;
@@ -462,16 +441,13 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                     });
                 });
 
-                // klik pada card juga memilih (opsional)
                 card.addEventListener('click', () => {
                     if (!card.classList.contains('disabled')) card.querySelector('.btn-vote button').click();
                 });
             });
 
-            // Show/hide kelas based on role
             function updateKelasVisibility() {
                 if (roleSelect.value === 'guru') {
-                    // hide kelas completely and disable the select (so it won't be submitted)
                     kelasWrap.classList.add('hidden');
                     kelasSelect.value = '';
                     kelasSelect.disabled = true;
@@ -482,11 +458,10 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                     kelasSelect.removeAttribute('aria-hidden');
                 }
             }
-            // init
             updateKelasVisibility();
             roleSelect.addEventListener('change', updateKelasVisibility);
 
-            // Modal handlers
+            // modal
             function openModal() {
                 modalWarning.style.display = 'flex';
                 modalWarning.setAttribute('aria-hidden', 'false');
@@ -502,31 +477,26 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                 if (e.target === modalWarning) closeModal();
             });
 
-            // Form submit validation
             form.addEventListener('submit', function(e) {
                 const nama = nameInput.value.trim();
                 const role = roleSelect.value;
                 const kelas = kelasSelect.value;
                 const kandidat = inputHidden.value;
 
-                // validate name & candidate first
                 if (!nama || !kandidat) {
                     e.preventDefault();
                     openModal();
                     return;
                 }
 
-                // only enforce kelas when role is siswa
                 if (role === 'siswa' && (!kelas || kelas === '')) {
                     e.preventDefault();
                     alert('⚠️ Untuk role siswa, silakan pilih kelas terlebih dahulu.');
                     return;
                 }
 
-                // ok -> let the form submit to server
             });
 
-            // Accessibility: allow keyboard selection for cards (optional)
             kandidatCards.forEach((card, idx) => {
                 card.setAttribute('tabindex', '0');
                 card.addEventListener('keydown', (ev) => {
