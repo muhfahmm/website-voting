@@ -340,7 +340,6 @@ while ($row = mysqli_fetch_assoc($q)) {
                     <div class="progress">
                         <div class="progress-fill" style="width: <?= $percent ?>%;"></div>
                     </div>
-
                     <div class="kandidat-list">
                         <?php if (isset($hasilKandidat[$kelas])): ?>
                             <?php foreach ($hasilKandidat[$kelas]["kandidat"] as $nomor => $jumlah): ?>
