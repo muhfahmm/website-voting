@@ -2,7 +2,6 @@
 session_start();
 require '../../db/db.php';
 
-// cek login
 if (!isset($_SESSION['login'])) {
     header("Location: ../auth/login.php");
     exit;
@@ -123,7 +122,6 @@ if (!isset($_SESSION['login'])) {
 </head>
 
 <body>
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>Admin Panel</h2>
         <ul>
@@ -136,7 +134,6 @@ if (!isset($_SESSION['login'])) {
         </ul>
     </div>
 
-    <!-- Konten Tambah Kandidat -->
     <section class="main-content">
         <div class="card">
             <h2>Tambah Kandidat</h2>
