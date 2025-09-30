@@ -19,7 +19,7 @@ $query = mysqli_query($db, "
     ORDER BY k.nomor_kandidat ASC
 ");
 
-// Hitung total semua suara
+// Hitung total suara
 $totalQuery = mysqli_query($db, "SELECT COUNT(*) AS total FROM tb_vote_log");
 $totalRow = mysqli_fetch_assoc($totalQuery);
 $totalVotes = $totalRow['total'];
@@ -93,7 +93,6 @@ $totalVotes = $totalRow['total'];
             <p>Selamat datang, <b><?php echo htmlspecialchars($admin); ?></b></p>
         </header>
 
-        <!-- Hasil Voting -->
         <section class="card">
             <h2>Daftar Calon</h2>
             <table border="1" cellspacing="0" cellpadding="8">
@@ -127,10 +126,9 @@ $totalVotes = $totalRow['total'];
                 </tbody>
             </table>
 
-            <!-- Diagram Bar -->
             <div class="bar-chart">
                 <?php
-                mysqli_data_seek($query, 0); // reset pointer ke awal
+                mysqli_data_seek($query, 0);
                 while ($row = mysqli_fetch_assoc($query)) {
                     $persentase = $totalVotes > 0 ? round(($row['total_suara'] / $totalVotes) * 100, 2) : 0;
                 ?>
