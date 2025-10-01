@@ -363,6 +363,13 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                             <option value="XII">XII</option>
                         </select>
                     </div>
+                    <div class="messages">
+                        <textarea
+                            name="pesan"
+                            id="inputPesan"
+                            style="width: 100%; height: 110px; padding: 10px; font-size: 17px;"
+                            placeholder="Berikan catatan untuk calon ketua kita!!!!"></textarea>
+                    </div>
                     <input type="hidden" name="kandidat_terpilih" id="kandidat_terpilih">
                     <button type="submit" name="kirim">Kirim Vote</button>
                 </form>
