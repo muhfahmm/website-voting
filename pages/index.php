@@ -107,7 +107,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             min-width: 48%;
             background: #fafafa;
             border-radius: 8px;
-            padding: 10px;
             text-align: center;
         }
 
@@ -145,7 +144,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             background: #fff;
             padding: 16px;
             border-radius: 10px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);  
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
             margin: 0 5%;
         }
 
@@ -228,29 +227,29 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
         }
 
         /* Style umum untuk select */
-.form-user select {
-    appearance: none; /* hilangkan style default browser */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-size: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 10px 35px 10px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: border-color .2s, box-shadow .2s;
-}
+        .form-user select {
+            appearance: none;
+            /* hilangkan style default browser */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px 35px 10px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: border-color .2s, box-shadow .2s;
+        }
 
-.form-user select:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-}
+        .form-user select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
 
-.form-user select:hover {
-    border-color: #2980b9;
-}
-
+        .form-user select:hover {
+            border-color: #2980b9;
+        }
     </style>
 </head>
 
@@ -267,17 +266,17 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                     <div class="card-wrapper">
                         <div class="card-content">
                             <div class="card">
-                            <img src="../admin/uploads/<?= $row['foto_ketua'] ?>" alt="Ketua">
-                            <h3><?= $row['nama_ketua']; ?></h3>
-                            <p><?= $row['kelas_ketua']; ?></p>
-                            <small>Calon Ketua OSIS</small>
-                        </div>
-                        <div class="card">
-                            <img src="../admin/uploads/<?= $row['foto_wakil'] ?>" alt="Wakil">
-                            <h3><?= $row['nama_wakil']; ?></h3>
-                            <p><?= $row['kelas_wakil']; ?></p>
-                            <small>Calon Wakil OSIS</small>
-                        </div>
+                                <img src="../admin/uploads/<?= $row['foto_ketua'] ?>" alt="Ketua">
+                                <h3><?= $row['nama_ketua']; ?></h3>
+                                <p><?= $row['kelas_ketua']; ?></p>
+                                <small>Calon Ketua OSIS</small>
+                            </div>
+                            <div class="card">
+                                <img src="../admin/uploads/<?= $row['foto_wakil'] ?>" alt="Wakil">
+                                <h3><?= $row['nama_wakil']; ?></h3>
+                                <p><?= $row['kelas_wakil']; ?></p>
+                                <small>Calon Wakil OSIS</small>
+                            </div>
                         </div>
                     </div>
                     <div class="btn-vote"><button type="button">Pilih Kandidat</button></div>
@@ -348,13 +347,27 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             kelasWrap.style.display = (roleSelect.value === 'siswa') ? 'block' : 'none';
 
             kandidatCards.forEach(card => {
-                const btn = card.querySelector('button');
-                btn.addEventListener('click', () => {
-                    kandidatCards.forEach(c => c.classList.remove('active'));
-                    card.classList.add('active');
-                    inputKandidat.value = card.getAttribute('data-id');
-                });
+    const btn = card.querySelector('button');
+    btn.addEventListener('click', () => {
+        // jika card ini sedang aktif → nonaktifkan
+        if (card.classList.contains('active')) {
+            card.classList.remove('active');
+            btn.textContent = "Pilih Kandidat";
+            inputKandidat.value = ""; // kosongkan input hidden
+        } else {
+            // reset semua kandidat lain
+            kandidatCards.forEach(c => {
+                c.classList.remove('active');
+                c.querySelector('button').textContent = "Pilih Kandidat";
             });
+            // aktifkan kandidat ini
+            card.classList.add('active');
+            btn.textContent = "Dipilih";
+            inputKandidat.value = card.getAttribute('data-id');
+        }
+    });
+});
+
 
             const modalSuccess = document.getElementById('modalSuccess');
             const modalError = document.getElementById('modalError');
