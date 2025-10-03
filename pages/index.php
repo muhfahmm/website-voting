@@ -22,21 +22,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['kirim'])) {
         $kelas_db = ($role === 'siswa') ? $kelas_pemilih : '';
         mysqli_begin_transaction($db);
         try {
-            $stmt_voter = mysqli_prepare($db, "INSERT INTO tb_voter (nama_voter, kelas, role, created_at) VALUES (?, ?, ?, NOW())");
-            mysqli_stmt_bind_param($stmt_voter, "sss", $nama_pemilih, $kelas_db, $role);
-            mysqli_stmt_execute($stmt_voter);
+            $voter = mysqli_prepare($db, "INSERT INTO tb_voter (nama_voter, kelas, role, created_at) VALUES (?, ?, ?, NOW())");
+            mysqli_stmt_bind_param($voter, "sss", $nama_pemilih, $kelas_db, $role);
+            mysqli_stmt_execute($voter);
             $voter_id = mysqli_insert_id($db);
-            mysqli_stmt_close($stmt_voter);
+            mysqli_stmt_close($voter);
 
-            $stmt_vote_log = mysqli_prepare($db, "INSERT INTO tb_vote_log (voter_id, nomor_kandidat, created_at) VALUES (?, ?, NOW())");
-            mysqli_stmt_bind_param($stmt_vote_log, "ii", $voter_id, $kandidat_terpilih);
-            mysqli_stmt_execute($stmt_vote_log);
-            mysqli_stmt_close($stmt_vote_log);
+            $vote_log = mysqli_prepare($db, "INSERT INTO tb_vote_log (voter_id, nomor_kandidat, created_at) VALUES (?, ?, NOW())");
+            mysqli_stmt_bind_param($vote_log, "ii", $voter_id, $kandidat_terpilih);
+            mysqli_stmt_execute($vote_log);
+            mysqli_stmt_close($vote_log);
 
-            $stmt_update = mysqli_prepare($db, "UPDATE tb_vote_result SET jumlah_vote = jumlah_vote + 1 WHERE nomor_kandidat = ?");
-            mysqli_stmt_bind_param($stmt_update, "i", $kandidat_terpilih);
-            mysqli_stmt_execute($stmt_update);
-            mysqli_stmt_close($stmt_update);
+            $update = mysqli_prepare($db, "UPDATE tb_vote_result SET jumlah_vote = jumlah_vote + 1 WHERE nomor_kandidat = ?");
+            mysqli_stmt_bind_param($update, "i", $kandidat_terpilih);
+            mysqli_stmt_execute($update);
+            mysqli_stmt_close($update);
 
             mysqli_commit($db);
 
