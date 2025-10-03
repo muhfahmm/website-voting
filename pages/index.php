@@ -260,8 +260,23 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
     <div class="container">
         <div class="title">
             <h1>Form Voting Ketua & Wakil OSIS Skalsa</h1>
-        </div>
+            <div class="logo">
+                <img src="assets/img/logo osis.png">
+                <img src="assets/img/logo sekolah.png">
+                <style>
+                    .logo {
+                        width: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
 
+                    .logo img {
+                        height: 310px;
+                    }
+                </style>
+            </div>
+        </div>
         <div class="kandidat-list">
             <?php while ($row = mysqli_fetch_assoc($query)) : ?>
                 <div class="kandidat-card" data-id="<?= $row['nomor_kandidat']; ?>">
