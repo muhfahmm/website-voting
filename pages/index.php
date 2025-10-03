@@ -47,7 +47,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['kirim'])) {
         }
     }
 }
-
 // ambil kandidat
 $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat ASC");
 ?>
@@ -367,7 +366,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                     }
                 });
             });
-
 
             const modalSuccess = document.getElementById('modalSuccess');
             const modalError = document.getElementById('modalError');
