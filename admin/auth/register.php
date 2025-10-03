@@ -31,10 +31,12 @@ if (isset($_POST['register'])) {
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Register Admin</title>
 </head>
+
 <body>
     <h2>Register Admin</h2>
     <form action="" method="post">
@@ -45,4 +47,5 @@ if (isset($_POST['register'])) {
     </form>
     <p>Sudah punya akun? <a href="login.php">Login</a></p>
 </body>
+
 </html>

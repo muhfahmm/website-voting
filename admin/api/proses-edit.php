@@ -53,4 +53,3 @@ if (isset($_POST['edit'])) {
         echo "Gagal update kandidat: " . mysqli_error($db);
     }
 }
-?>
