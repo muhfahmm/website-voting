@@ -226,6 +226,31 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                 transform: scale(1);
             }
         }
+
+        /* Style umum untuk select */
+.form-user select {
+    appearance: none; /* hilangkan style default browser */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px 35px 10px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.form-user select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+.form-user select:hover {
+    border-color: #2980b9;
+}
+
     </style>
 </head>
 
