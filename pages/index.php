@@ -133,6 +133,8 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             padding: 8px 14px;
             border-radius: 6px;
             cursor: pointer;
+            width: 100%;
+            height: 40px;
         }
 
         .btn-vote button:hover {
