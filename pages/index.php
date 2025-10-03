@@ -347,26 +347,26 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             kelasWrap.style.display = (roleSelect.value === 'siswa') ? 'block' : 'none';
 
             kandidatCards.forEach(card => {
-    const btn = card.querySelector('button');
-    btn.addEventListener('click', () => {
-        // jika card ini sedang aktif → nonaktifkan
-        if (card.classList.contains('active')) {
-            card.classList.remove('active');
-            btn.textContent = "Pilih Kandidat";
-            inputKandidat.value = ""; // kosongkan input hidden
-        } else {
-            // reset semua kandidat lain
-            kandidatCards.forEach(c => {
-                c.classList.remove('active');
-                c.querySelector('button').textContent = "Pilih Kandidat";
+                const btn = card.querySelector('button');
+                btn.addEventListener('click', () => {
+                    // jika card ini sedang aktif → nonaktifkan
+                    if (card.classList.contains('active')) {
+                        card.classList.remove('active');
+                        btn.textContent = "Pilih Kandidat";
+                        inputKandidat.value = ""; // kosongkan input hidden
+                    } else {
+                        // reset semua kandidat lain
+                        kandidatCards.forEach(c => {
+                            c.classList.remove('active');
+                            c.querySelector('button').textContent = "Pilih Kandidat";
+                        });
+                        // aktifkan kandidat ini
+                        card.classList.add('active');
+                        btn.textContent = "Dipilih";
+                        inputKandidat.value = card.getAttribute('data-id');
+                    }
+                });
             });
-            // aktifkan kandidat ini
-            card.classList.add('active');
-            btn.textContent = "Dipilih";
-            inputKandidat.value = card.getAttribute('data-id');
-        }
-    });
-});
 
 
             const modalSuccess = document.getElementById('modalSuccess');
