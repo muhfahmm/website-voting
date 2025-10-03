@@ -10,7 +10,7 @@ if (!isset($_SESSION['login'])) {
 $admin = $_SESSION['username'];
 
 // jumlah data per halaman
-$limit = 5;
+$limit = 10;
 
 // halaman untuk siswa & guru
 $pageSiswa = isset($_GET['page_siswa']) ? (int)$_GET['page_siswa'] : 1;

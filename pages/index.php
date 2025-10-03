@@ -56,6 +56,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
 <head>
     <meta charset="UTF-8">
     <title>Voting Kandidat OSIS</title>
+    <link rel="icon" href="assets/img/logo osis.png">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -102,6 +103,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
         }
 
         .card {
+            margin: 5px;
             flex: 1;
             min-width: 48%;
             background: #fafafa;
@@ -293,7 +295,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                     <option value="siswa" selected>Siswa</option>
                     <option value="guru">Guru</option>
                 </select>
-                <div id="kelasWrap">
+                <div id="kelasWrap" style="margin: 10px 0;">
                     <label for="kelas">Kelas Pemilih</label>
                     <select id="kelas" name="kelas">
                         <option value="">Pilih Kelas</option>
