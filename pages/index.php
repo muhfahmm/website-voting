@@ -180,6 +180,31 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             background: #27ae60;
         }
 
+                /* Style umum untuk select */
+        .form-user select {
+            appearance: none;
+            /* hilangkan style default browser */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px 35px 10px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .form-user select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        .form-user select:hover {
+            border-color: #2980b9;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -223,31 +248,6 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                 opacity: 1;
                 transform: scale(1);
             }
-        }
-
-        /* Style umum untuk select */
-        .form-user select {
-            appearance: none;
-            /* hilangkan style default browser */
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-size: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding: 10px 35px 10px 12px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: border-color .2s, box-shadow .2s;
-        }
-
-        .form-user select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-        }
-
-        .form-user select:hover {
-            border-color: #2980b9;
         }
     </style>
 </head>
@@ -297,9 +297,10 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
                         <option value="">Pilih Kelas</option>
                         <option value="X-1">X-1</option>
                         <option value="X-2">X-2</option>
-                        <option value="XI-1">XI-1</option>
-                        <option value="XI-2">XI-2</option>
-                        <option value="XII">XII</option>
+                        <option value="XI-1">XI-1 TKJ</option>
+                        <option value="XI-2">XI-2 TKJ</option>
+                        <option value="XI-TJA">XI TJA</option>
+                        <option value="XII">XII TKJ</option>
                     </select>
                 </div>
                 <textarea name="pesan" placeholder="Berikan catatan untuk calon ketua kita"></textarea>
