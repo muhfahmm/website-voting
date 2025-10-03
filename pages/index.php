@@ -182,7 +182,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             background: #27ae60;
         }
 
-                /* Style umum untuk select */
+        /* Style umum untuk select */
         .form-user select {
             appearance: none;
             /* hilangkan style default browser */
