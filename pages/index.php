@@ -261,24 +261,22 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
         <div class="kandidat-list">
             <?php while ($row = mysqli_fetch_assoc($query)) : ?>
                 <div class="kandidat-card" data-id="<?= $row['nomor_kandidat']; ?>">
-                    <h3>Pasangan Nomor <?= $row['nomor_kandidat']; ?></h3>
+                    <h3 style="text-align: center;">Pasangan Nomor <?= $row['nomor_kandidat']; ?></h3>
                     <div class="card-wrapper">
                         <div class="card-content">
                             <div class="card">
                                 <img src="../admin/uploads/<?= $row['foto_ketua'] ?>" alt="Ketua">
-                                <h3><?= $row['nama_ketua']; ?></h3>
-                                <p><?= $row['kelas_ketua']; ?></p>
+                                <h3 style="margin: 0; margin-top:15px;"><?= $row['nama_ketua']; ?></h3>
                                 <small>Calon Ketua OSIS</small>
                             </div>
                             <div class="card">
                                 <img src="../admin/uploads/<?= $row['foto_wakil'] ?>" alt="Wakil">
-                                <h3><?= $row['nama_wakil']; ?></h3>
-                                <p><?= $row['kelas_wakil']; ?></p>
+                                <h3 style="margin: 0; margin-top:15px;"><?= $row['nama_wakil']; ?></h3>
                                 <small>Calon Wakil OSIS</small>
                             </div>
                         </div>
                     </div>
-                    <div class="btn-vote"><button type="button">Pilih Kandidat</button></div>
+                    <div class="btn-vote"><button type="button">Pilih Kandidat <?= $row['nomor_kandidat']; ?></button></div>
                 </div>
             <?php endwhile; ?>
         </div>
