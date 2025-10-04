@@ -301,7 +301,10 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
         </div>
 
         <div class="form-user">
-            <h3>Form Pemilih</h3>
+            <div style="display: flex; align-items:center; gap: 10px;">
+                <h3>Form Pemilih</h3>
+                <p style="color: red; text-align:center; margin: 0;">( Wajib Diisi )</p>
+            </div>
             <form action="" method="post" id="formVote" novalidate>
                 <label for="pemilih">Nama Pemilih</label>
                 <input type="text" id="pemilih" name="pemilih" placeholder="Nama lengkap">
