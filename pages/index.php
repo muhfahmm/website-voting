@@ -307,7 +307,7 @@ $query = mysqli_query($db, "SELECT * FROM tb_kandidat ORDER BY nomor_kandidat AS
             </div>
             <form action="" method="post" id="formVote" novalidate>
                 <label for="pemilih">Nama Pemilih</label>
-                <input type="text" id="pemilih" name="pemilih" placeholder="Nama lengkap">
+                <input type="text" id="pemilih" name="pemilih" placeholder="Nama lengkap" autocomplete="off">
                 <label for="role">Role</label>
                 <select id="role" name="role">
                     <option value="siswa" selected>Siswa</option>
