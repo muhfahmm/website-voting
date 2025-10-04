@@ -166,7 +166,7 @@ $totalVotes = $totalRow['total'];
 
     <div class="main-content">
         <h2 style="margin-bottom: 20px; text-align:center;">Hasil Sementara</h2>
-        <div class="summary-box"> Total Siswa: <?= $total_siswa; ?> | Sudah Voting: <?= $totalVotes; ?> | Belum Voting: <?= $total_siswa - $totalVotes; ?> </div>
+        <div class="summary-box" style="text-align: center; font-weight:600; font-size:18px;"> Total Siswa: <?= $total_siswa; ?> | Sudah Voting: <?= $totalVotes; ?> | Belum Voting: <?= $total_siswa - $totalVotes; ?> </div>
         <div class="bar-chart">
             <?php
             while ($row = mysqli_fetch_assoc($query)) {
