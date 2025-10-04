@@ -129,7 +129,6 @@ while ($row = mysqli_fetch_assoc($q)) {
     <meta charset="UTF-8">
     <title>Daftar Voter - Voting OSIS</title>
     <style>
-        /* (sama persis seperti style yang kamu punya) */
         * {
             margin: 0;
             padding: 0;
@@ -355,7 +354,7 @@ while ($row = mysqli_fetch_assoc($q)) {
             <?php endforeach; ?>
         </div>
 
-        <h1>Daftar Voter Khusus Guru</h1>
+        <h1>Daftar voter untuk Guru</h1>
         <table>
             <tr>
                 <th>No</th>

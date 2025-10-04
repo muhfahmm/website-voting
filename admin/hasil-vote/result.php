@@ -10,6 +10,16 @@ if (!isset($_SESSION['login'])) {
 
 $admin = $_SESSION['username'];
 
+$dataKelas = [
+    "X-1" => 10,
+    "X-2" => 10,
+    "XI-1" => 10,
+    "XI-2" => 10,
+    "XI-TJA" => 10,
+    "XII" => 10
+];
+$total_siswa = array_sum($dataKelas);
+
 // Ambil data kandidat beserta jumlah suara
 $query = mysqli_query($db, "
     SELECT k.nomor_kandidat, k.nama_ketua, k.nama_wakil, COUNT(v.id) AS total_suara
@@ -127,8 +137,13 @@ $totalVotes = $totalRow['total'];
             margin-right: 10px;
         }
 
+        .result-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
         .chart-container {
-            width: 45%;
+            width: 35%;
             margin: 20px;
             display: inline-block;
             vertical-align: top;
@@ -151,6 +166,7 @@ $totalVotes = $totalRow['total'];
 
     <div class="main-content">
         <h2 style="margin-bottom: 20px; text-align:center;">Hasil Sementara</h2>
+        <div class="summary-box"> Total Siswa: <?= $total_siswa; ?> | Sudah Voting: <?= $totalVotes; ?> | Belum Voting: <?= $total_siswa - $totalVotes; ?> </div>
         <div class="bar-chart">
             <?php
             while ($row = mysqli_fetch_assoc($query)) {
@@ -165,11 +181,14 @@ $totalVotes = $totalRow['total'];
             <?php } ?>
         </div>
 
-        <div class="chart-container">
-            <canvas id="pieChart"></canvas>
-        </div>
-        <div class="chart-container">
-            <canvas id="barChart"></canvas>
+        <div class="result-container">
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+            <br>
+            <div class="chart-container">
+                <canvas id="barChart"></canvas>
+            </div>
         </div>
     </div>
 
